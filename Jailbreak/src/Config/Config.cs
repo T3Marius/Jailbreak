@@ -17,7 +17,7 @@ public class JailbreakConfig
     public WardenConfig Warden { get; set; } = new();
 
     [YamlMember(Alias = "guard")]
-    public CounterTerroristConfig Guard { get; set; } = new();
+    public GuardConfig Guard { get; set; } = new();
 
     [YamlMember(Alias = "prisoner")]
     public PrisonerConfig Prisoner { get; set; } = new();
@@ -59,8 +59,11 @@ public class WardenConfig
 {
     [YamlMember(Alias = "warden_set_sound")]
     public string WardenSetSound { get; set; } = "";
+
+    [YamlMember(Alias = "commands")]
+    public WardenCommandsConfig Commands { get; set; } = new();
 }
-public class CounterTerroristConfig
+public class GuardConfig
 {
     [YamlMember(Alias = "show_guns_menu_on_round_start")]
     public bool ShowGunsMenuOnRoundStart { get; set; } = true;
@@ -79,4 +82,18 @@ public class PrisonerConfig
     [YamlMember(Alias = "skip_mute_flags")]
     public List<string> SkipMuteFlags { get; set; } = ["@css/generic"];
 
+}
+public class WardenCommandsConfig
+{
+    [YamlMember(Alias = "take_warden")]
+    public List<string> TakeWarden { get; set; } = ["w", "warden"];
+
+    [YamlMember(Alias = "give_up_warden")]
+    public List<string> GiveUpWarden { get; set; } = ["uw", "unwarden"];
+
+    [YamlMember(Alias = "open_cells")]
+    public List<string> OpenCells { get; set; } = ["o", "open"];
+
+    [YamlMember(Alias = "close_cells")]
+    public List<string> CloseCells { get; set; } = ["c", "close"];
 }
