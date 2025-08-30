@@ -1,9 +1,11 @@
-
+using CSTimer = CounterStrikeSharp.API.Modules.Timers.Timer;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
-using CounterStrikeSharp.API.Modules.Entities.Constants;
+using static Jailbreak.Jailbreak;
 using CounterStrikeSharp.API.Modules.Utils;
 using Microsoft.Extensions.Logging;
+using CounterStrikeSharp.API.Modules.Admin;
+using CounterStrikeSharp.API.Modules.Timers;
 
 namespace Jailbreak;
 
@@ -41,6 +43,10 @@ public class JBPlayer : IDisposable
     public event Action<JBPlayer, bool>? OnWardenStatusChanged;
     public event Action<JBPlayer, bool>? OnRebelStatusChanges;
 
+    // +--------------------+
+    // | Jailbreak Timers   |
+    // +--------------------+
+    public CSTimer? RoundStartMute = null;
 
     // +--------------------+
     // | Constructor        |
@@ -202,10 +208,57 @@ public class JBPlayer : IDisposable
         IsInLastRequest = false;
         IsFreeday = false;
         UpdateRole();
+
+        if (IsPrisoner && IsValid)
+        {
+            if (Instance.Config.Prisoner.RoundStartMuteDuration > 0)
+            {
+                bool skip = Instance.Config.Prisoner.SkipMuteFlags.Count > 0
+                    && Instance.Config.Prisoner.SkipMuteFlags.Any(flag => AdminManager.PlayerHasPermissions(Controller, flag));
+
+                if (!IsMuted && !skip)
+                {
+                    SetMute(true);
+
+                    int muteDuration = Instance.Config.Prisoner.RoundStartMuteDuration;
+
+                    RoundStartMute = _plugin.AddTimer(1.0f, () =>
+                    {
+                        muteDuration--;
+
+                        if (muteDuration <= 0)
+                        {
+                            if (IsMuted)
+                                SetMute(false);
+
+
+                            RoundStartMute?.Kill();
+                            RoundStartMute = null;
+                        }
+
+                        if (IsValid && IsPrisoner)
+                        {
+                            PrintToHtml(Instance.Localizer["round_start_mute", muteDuration], 1.0f);
+                        }
+                    }, TimerFlags.REPEAT);
+
+                    PrintToHtml(Instance.Localizer["round_start_mute", muteDuration], 1.0f);
+                }
+            }
+        }
     }
     public void OnRoundEnd()
     {
         SetWarden(false);
+
+        if (IsPrisoner && IsValid)
+        {
+            if (Instance.Config.Prisoner.UnmutePrisonerOnRoundEnd)
+            {
+                if (IsMuted)
+                    SetMute(false);
+            }
+        }
     }
     public void OnDisconnect()
     {
