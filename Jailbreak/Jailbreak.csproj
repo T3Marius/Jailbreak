@@ -19,6 +19,10 @@
     <PackageReference Include="MySqlConnector" Version="2.4.0" PrivateAssets="all" ExcludeAssets="runtime" />
   </ItemGroup>
 
+  	<ItemGroup>
+		<None Update="lang\**\*.*" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\JailbreakApi\JailbreakApi.csproj"
                       ReferenceOutputAssembly="true"
