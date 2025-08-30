@@ -105,10 +105,6 @@ public class JBPlayer : IDisposable
             OnRoleChanged?.Invoke(this);
         }
     }
-    public bool CanBecomeWarden()
-    {
-        return IsValid && IsAlive && IsConnected && IsGuard && !IsWarden;
-    }
     public void SetWarden(bool isWarden)
     {
         if (!IsGuard && isWarden) return;
@@ -118,7 +114,7 @@ public class JBPlayer : IDisposable
 
         if (isWarden)
         {
-            _logger.LogInformation($"Set warden function called on {Name}");
+
         }
 
         if (oldStatus != IsWarden)
@@ -135,7 +131,7 @@ public class JBPlayer : IDisposable
 
         if (isRebel)
         {
-            _logger.LogInformation($"Set rebel function called on {Name}");
+
         }
 
         if (oldStatus != isRebel)
@@ -190,6 +186,9 @@ public class JBPlayer : IDisposable
     public void PrintToHtml(string message, float duration)
     {
         if (!IsValid) return;
+
+        if (HtmlMessages.ContainsKey(Controller!))
+            HtmlMessages.Remove(Controller!);
 
         HtmlMessages.Add(Controller!, message);
         _plugin.AddTimer(duration, () =>
