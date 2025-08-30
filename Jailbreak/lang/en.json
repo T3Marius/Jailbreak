@@ -1,4 +1,9 @@
 {
     "prefix": "{green}[JB]{default} ",
-    "round_start_mute": "All prisoners are muted for <font color='red'>{0}</font> seconds."
+    "round_start_mute": "All prisoners are muted for <font color='red'>{0}</font> seconds.",
+    "new_warden": "<font color='cyan'>{0}</font> is the new Warden!",
+    "aleardy_warden": "<font color='cyan'>{0}</font> is the current Warden.",
+    "warden_gave_up": "<font color='cyan'>{0}</font> gave up on Warden<br>Use <font color='yellow'>!{1}</font> to be the new one!",
+    "only_guard": "Only {blue}Guardians{default} can use this command.",
+    "not_warden": "You're not {blue}Warden{default}."
 }
