@@ -1,0 +1,82 @@
+using System.ComponentModel;
+using MySqlConnector;
+using YamlDotNet.Serialization;
+
+namespace Jailbreak.Config;
+
+public class JailbreakConfig
+{
+    [YamlMember(Alias = "config_version")]
+    [DefaultValue(1)]
+    public int ConfigVersion { get; set; } = 1;
+
+    [YamlMember(Alias = "database")]
+    public DatabaseConfig Database { get; set; } = new();
+
+    [YamlMember(Alias = "warden")]
+    public WardenConfig Warden { get; set; } = new();
+
+    [YamlMember(Alias = "guard")]
+    public CounterTerroristConfig Guard { get; set; } = new();
+
+    [YamlMember(Alias = "prisoner")]
+    public PrisonerConfig Prisoner { get; set; } = new();
+
+    public string[] Validate()
+    {
+        var errors = new List<string>();
+
+        if (string.IsNullOrEmpty(Database.Host) || string.IsNullOrEmpty(Database.Name) || string.IsNullOrEmpty(Database.User))
+        {
+            errors.Add("You need to setup database credentials in config.");
+        }
+
+        return errors.ToArray();
+    }
+}
+
+public class DatabaseConfig
+{
+    [YamlMember(Alias = "host")]
+    public string Host { get; set; } = "localhost";
+
+    [YamlMember(Alias = "name")]
+    public string Name { get; set; } = "jailbreak";
+
+    [YamlMember(Alias = "user")]
+    public string User { get; set; } = "root";
+
+    [YamlMember(Alias = "pass")]
+    public string Pass { get; set; } = "password";
+
+    [YamlMember(Alias = "port")]
+    public uint Port { get; set; } = 3306;
+
+    [YamlMember(Alias = "ssl_mode")]
+    public string SslMode { get; set; } = "none";
+}
+public class WardenConfig
+{
+    [YamlMember(Alias = "warden_set_sound")]
+    public string WardenSetSound { get; set; } = "";
+}
+public class CounterTerroristConfig
+{
+    [YamlMember(Alias = "show_guns_menu_on_round_start")]
+    public bool ShowGunsMenuOnRoundStart { get; set; } = true;
+}
+public class PrisonerConfig
+{
+    [YamlMember(Alias = "mute_prisoner_always")]
+    public bool MutePrisonerAlways { get; set; } = false;
+
+    [YamlMember(Alias = "unmute_prisoner_on_round_end")]
+    public bool UnmutePrisonerOnRoundEnd { get; set; } = false;
+
+    [YamlMember(Alias = "round_start_mute_duration")]
+    public int RoundStartMuteDuration { get; set; } = 15;
+
+    [YamlMember(Alias = "skip_mute_flags")]
+    public List<string> SkipMuteFlags { get; set; } = ["@css/generic"];
+
+}
