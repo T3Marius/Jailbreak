@@ -37,7 +37,11 @@ public static class Events
         if (userId == null)
             return HookResult.Continue;
 
-        JBPlayerManagement.GetOrCreate(userId);
+        var jbPlayer = JBPlayerManagement.GetOrCreate(userId);
+
+        // events for jailbreak
+        jbPlayer.OnWardenStatusChanged += OnWardenStatusChanged;
+        jbPlayer.OnRebelStatusChanges += OnRebelStatusChanged;
 
         return HookResult.Continue;
     }
@@ -53,6 +57,14 @@ public static class Events
         JBPlayerManagement.Remove(userId.SteamID);
 
         return HookResult.Continue;
+    }
+    private static void OnWardenStatusChanged(JBPlayer player, bool isWarden)
+    {
+
+    }
+    private static void OnRebelStatusChanged(JBPlayer player, bool isRebel)
+    {
+
     }
     private static void OnTick()
     {
