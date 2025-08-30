@@ -190,7 +190,6 @@ public class ConfigManager : IDisposable
     {
         return new PrisonerConfig
         {
-            MutePrisonerAlways = loaded.MutePrisonerAlways,
             UnmutePrisonerOnRoundEnd = loaded.UnmutePrisonerOnRoundEnd,
             RoundStartMuteDuration = loaded.RoundStartMuteDuration > 0 ? loaded.RoundStartMuteDuration : defaults.RoundStartMuteDuration,
             SkipMuteFlags = loaded.SkipMuteFlags?.Count > 0 ? loaded.SkipMuteFlags : defaults.SkipMuteFlags
