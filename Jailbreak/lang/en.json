@@ -1,0 +1,4 @@
+{
+    "prefix": "{green}[JB]{default} ",
+    "round_start_mute": "All prisoners are muted for <font color='red'>{0}</font> seconds."
+}
