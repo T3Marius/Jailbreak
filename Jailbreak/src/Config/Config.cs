@@ -70,9 +70,6 @@ public class GuardConfig
 }
 public class PrisonerConfig
 {
-    [YamlMember(Alias = "mute_prisoner_always")]
-    public bool MutePrisonerAlways { get; set; } = false;
-
     [YamlMember(Alias = "unmute_prisoner_on_round_end")]
     public bool UnmutePrisonerOnRoundEnd { get; set; } = false;
 
