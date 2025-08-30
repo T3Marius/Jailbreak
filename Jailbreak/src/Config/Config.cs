@@ -22,6 +22,9 @@ public class JailbreakConfig
     [YamlMember(Alias = "prisoner")]
     public PrisonerConfig Prisoner { get; set; } = new();
 
+    [YamlMember(Alias = "models")]
+    public ModelsConfig Models { get; set; } = new();
+
     public string[] Validate()
     {
         var errors = new List<string>();
@@ -60,6 +63,12 @@ public class WardenConfig
     [YamlMember(Alias = "warden_set_sound")]
     public string WardenSetSound { get; set; } = "";
 
+    [YamlMember(Alias = "warden_removed_sound")]
+    public string WardenRemovedSound { get; set; } = "";
+
+    [YamlMember(Alias = "warden_killed_sound")]
+    public string WardenKilledSound { get; set; } = "";
+
     [YamlMember(Alias = "commands")]
     public WardenCommandsConfig Commands { get; set; } = new();
 }
@@ -93,4 +102,15 @@ public class WardenCommandsConfig
 
     [YamlMember(Alias = "close_cells")]
     public List<string> CloseCells { get; set; } = ["c", "close"];
+}
+public class ModelsConfig
+{
+    [YamlMember(Alias = "warden_model")]
+    public string WardenModel { get; set; } = "";
+
+    [YamlMember(Alias = "guard_model")]
+    public string GuardModel { get; set; } = "";
+
+    [YamlMember(Alias = "prisoner_model")]
+    public string PrisonerModel { get; set; } = "";
 }

@@ -153,10 +153,19 @@ public class ConfigManager : IDisposable
             Database = MergeDatabaseConfig(loaded.Database, defaults.Database),
             Warden = MergeWardenConfig(loaded.Warden, defaults.Warden),
             Guard = MergeGuardConfig(loaded.Guard, defaults.Guard),
-            Prisoner = MergePrisonerConfig(loaded.Prisoner, defaults.Prisoner)
+            Prisoner = MergePrisonerConfig(loaded.Prisoner, defaults.Prisoner),
+            Models = MergeModelsConfig(loaded.Models, defaults.Models)
         };
     }
-
+    private ModelsConfig MergeModelsConfig(ModelsConfig loaded, ModelsConfig defaults)
+    {
+        return new ModelsConfig
+        {
+            WardenModel = loaded.WardenModel ?? defaults.WardenModel,
+            GuardModel = loaded.GuardModel ?? defaults.GuardModel,
+            PrisonerModel = loaded.PrisonerModel ?? defaults.PrisonerModel
+        };
+    }
     private DatabaseConfig MergeDatabaseConfig(DatabaseConfig loaded, DatabaseConfig defaults)
     {
         return new DatabaseConfig
@@ -174,7 +183,10 @@ public class ConfigManager : IDisposable
     {
         return new WardenConfig
         {
-            WardenSetSound = loaded.WardenSetSound ?? defaults.WardenSetSound
+            WardenSetSound = loaded.WardenSetSound ?? defaults.WardenSetSound,
+            WardenRemovedSound = loaded.WardenRemovedSound ?? defaults.WardenRemovedSound,
+            WardenKilledSound = loaded.WardenKilledSound ?? defaults.WardenKilledSound,
+            Commands = loaded.Commands ?? defaults.Commands,
         };
     }
 
