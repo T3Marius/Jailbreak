@@ -10,6 +10,8 @@ public static class Events
     public static void RegisterEventsHandlers()
     {
         Instance.RegisterEventHandler<EventPlayerDisconnect>(OnPlayerDisconnect);
+        Instance.RegisterEventHandler<EventRoundStart>(OnRoundStart);
+        Instance.RegisterEventHandler<EventRoundEnd>(OnRoundEnd);
         Instance.RegisterEventHandler<EventPlayerConnectFull>(OnPlayerConnectFull);
         Instance.RegisterEventHandler<EventPlayerTeam>(OnPlayerTeam);
     }
@@ -17,6 +19,30 @@ public static class Events
     {
         Instance.RegisterListener<OnTick>(OnTick);
     }
+    private static HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
+    {
+        foreach (var player in Utilities.GetPlayers())
+        {
+            var jbPlayer = JBPlayerManagement.GetOrCreate(player);
+
+            jbPlayer.OnRoundStart();
+        }
+
+        return HookResult.Continue;
+    }
+    private static HookResult OnRoundEnd(EventRoundEnd @event, GameEventInfo info)
+    {
+        foreach (var player in Utilities.GetPlayers())
+        {
+            var jbPlayer = JBPlayerManagement.GetOrCreate(player);
+
+            jbPlayer.OnRoundEnd();
+        }
+
+        return HookResult.Continue;
+    }
+
+
     private static HookResult OnPlayerTeam(EventPlayerTeam @event, GameEventInfo info)
     {
         CCSPlayerController? player = @event.Userid;
