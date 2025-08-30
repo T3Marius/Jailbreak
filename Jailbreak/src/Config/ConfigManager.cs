@@ -40,6 +40,8 @@ public class ConfigManager : IDisposable
         _serializer = new SerializerBuilder()
             .WithNamingConvention(UnderscoredNamingConvention.Instance)
             .WithIndentedSequences()
+            .ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitDefaults)
+            .WithNewLine("\n")
             .Build();
 
         _deserializer = new DeserializerBuilder()
@@ -144,104 +146,55 @@ public class ConfigManager : IDisposable
     private JailbreakConfig MergeWithDefaults(JailbreakConfig loaded)
     {
         var defaults = new JailbreakConfig();
-        return MergeObjects(loaded, defaults);
-    }
 
-    private T MergeObjects<T>(T loaded, T defaults) where T : new()
-    {
-        if (loaded == null) return defaults;
-        if (defaults == null) return loaded;
-
-        var result = new T();
-        var properties = typeof(T).GetProperties();
-
-        foreach (var property in properties)
+        return new JailbreakConfig
         {
-            if (!property.CanRead || !property.CanWrite) continue;
-
-            var loadedValue = property.GetValue(loaded);
-            var defaultValue = property.GetValue(defaults);
-
-            // If the loaded value is null or default, use the default value
-            if (IsNullOrDefault(loadedValue, property.PropertyType))
-            {
-                property.SetValue(result, defaultValue);
-            }
-            // If it's a complex object (not primitive/string), merge recursively
-            else if (IsComplexType(property.PropertyType))
-            {
-                var mergedValue = MergeComplexObject(loadedValue, defaultValue, property.PropertyType);
-                property.SetValue(result, mergedValue);
-            }
-            // Otherwise, use the loaded value
-            else
-            {
-                property.SetValue(result, loadedValue);
-            }
-        }
-
-        return result;
+            ConfigVersion = loaded.ConfigVersion > 0 ? loaded.ConfigVersion : defaults.ConfigVersion,
+            Database = MergeDatabaseConfig(loaded.Database, defaults.Database),
+            Warden = MergeWardenConfig(loaded.Warden, defaults.Warden),
+            Guard = MergeGuardConfig(loaded.Guard, defaults.Guard),
+            Prisoner = MergePrisonerConfig(loaded.Prisoner, defaults.Prisoner)
+        };
     }
 
-    private object? MergeComplexObject(object? loaded, object? defaults, Type type)
+    private DatabaseConfig MergeDatabaseConfig(DatabaseConfig loaded, DatabaseConfig defaults)
     {
-        if (loaded == null) return defaults;
-        if (defaults == null) return loaded;
-
-        var result = Activator.CreateInstance(type);
-        var properties = type.GetProperties();
-
-        foreach (var property in properties)
+        return new DatabaseConfig
         {
-            if (!property.CanRead || !property.CanWrite) continue;
-
-            var loadedValue = property.GetValue(loaded);
-            var defaultValue = property.GetValue(defaults);
-
-            if (IsNullOrDefault(loadedValue, property.PropertyType))
-            {
-                property.SetValue(result, defaultValue);
-            }
-            else if (IsComplexType(property.PropertyType))
-            {
-                var mergedValue = MergeComplexObject(loadedValue, defaultValue, property.PropertyType);
-                property.SetValue(result, mergedValue);
-            }
-            else
-            {
-                property.SetValue(result, loadedValue);
-            }
-        }
-
-        return result;
+            Host = !string.IsNullOrEmpty(loaded.Host) ? loaded.Host : defaults.Host,
+            Name = !string.IsNullOrEmpty(loaded.Name) ? loaded.Name : defaults.Name,
+            User = !string.IsNullOrEmpty(loaded.User) ? loaded.User : defaults.User,
+            Pass = !string.IsNullOrEmpty(loaded.Pass) ? loaded.Pass : defaults.Pass,
+            Port = loaded.Port > 0 ? loaded.Port : defaults.Port,
+            SslMode = !string.IsNullOrEmpty(loaded.SslMode) ? loaded.SslMode : defaults.SslMode
+        };
     }
 
-    private static bool IsNullOrDefault(object? value, Type type)
+    private WardenConfig MergeWardenConfig(WardenConfig loaded, WardenConfig defaults)
     {
-        if (value == null) return true;
-
-        // For strings, check if empty
-        if (type == typeof(string))
-            return string.IsNullOrEmpty((string)value);
-
-        // For value types, check if default
-        if (type.IsValueType)
+        return new WardenConfig
         {
-            var defaultValue = Activator.CreateInstance(type);
-            return value.Equals(defaultValue);
-        }
-
-        return false;
+            WardenSetSound = loaded.WardenSetSound ?? defaults.WardenSetSound
+        };
     }
 
-    private static bool IsComplexType(Type type)
+    private GuardConfig MergeGuardConfig(GuardConfig loaded, GuardConfig defaults)
     {
-        return !type.IsPrimitive &&
-               type != typeof(string) &&
-               type != typeof(DateTime) &&
-               type != typeof(decimal) &&
-               !type.IsEnum &&
-               type.IsClass;
+        return new GuardConfig
+        {
+            ShowGunsMenuOnRoundStart = loaded.ShowGunsMenuOnRoundStart
+        };
+    }
+
+    private PrisonerConfig MergePrisonerConfig(PrisonerConfig loaded, PrisonerConfig defaults)
+    {
+        return new PrisonerConfig
+        {
+            MutePrisonerAlways = loaded.MutePrisonerAlways,
+            UnmutePrisonerOnRoundEnd = loaded.UnmutePrisonerOnRoundEnd,
+            RoundStartMuteDuration = loaded.RoundStartMuteDuration > 0 ? loaded.RoundStartMuteDuration : defaults.RoundStartMuteDuration,
+            SkipMuteFlags = loaded.SkipMuteFlags?.Count > 0 ? loaded.SkipMuteFlags : defaults.SkipMuteFlags
+        };
     }
 
     private void OnFileChanged(object sender, FileSystemEventArgs e)
