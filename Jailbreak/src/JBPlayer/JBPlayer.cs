@@ -87,13 +87,13 @@ public class JBPlayer : IDisposable
         {
             if (Role != JBRole.Guard)
             {
-                // remove warden
+                SetWarden(false);
             }
 
             if (Role != JBRole.Prisoner)
             {
-                // remove rebel
-                // remove last request
+                SetRebel(false);
+                SetLastRequest(false);
             }
 
             OnRoleChanged?.Invoke(this);
