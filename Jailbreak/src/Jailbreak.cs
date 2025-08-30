@@ -35,6 +35,8 @@ public class Jailbreak : BasePlugin
         Events.RegisterEventsHandlers();
         Events.RegisterListeners();
 
+        WardenCommands.Register();
+
         JBPlayerManagement.Initialize(Logger);
     }
     public override void Unload(bool hotReload)
