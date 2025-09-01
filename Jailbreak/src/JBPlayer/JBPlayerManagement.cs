@@ -14,6 +14,8 @@ public static class JBPlayerManagement
         {
             jbPlayer = new JBPlayer(controller, controller.PlayerPawn.Value);
             JBPlayers[controller.Slot] = jbPlayer;
+
+            jbPlayer.OnPlayerRoleChanged += Events.OnPlayerRoleChanged;
         }
 
         return jbPlayer;
