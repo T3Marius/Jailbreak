@@ -25,6 +25,9 @@ public class JailbreakConfig
     [YamlMember(Alias = "models")]
     public ModelsConfig Models { get; set; } = new();
 
+    [YamlMember(Alias = "global_volume")]
+    public VolumeConfig GlobalVolume { get; set; } = new();
+
     public string[] Validate()
     {
         var errors = new List<string>();
@@ -69,6 +72,9 @@ public class WardenConfig
     [YamlMember(Alias = "warden_killed_sound")]
     public string WardenKilledSound { get; set; } = "";
 
+    [YamlMember(Alias = "warden_color")]
+    public string WardenColor { get; set; } = "Blue";
+
     [YamlMember(Alias = "commands")]
     public WardenCommandsConfig Commands { get; set; } = new();
 }
@@ -108,9 +114,20 @@ public class ModelsConfig
     [YamlMember(Alias = "warden_model")]
     public string WardenModel { get; set; } = "";
 
-    [YamlMember(Alias = "guard_model")]
-    public string GuardModel { get; set; } = "";
+    [YamlMember(Alias = "guardian_model")]
+    public string GuardianModel { get; set; } = "";
 
     [YamlMember(Alias = "prisoner_model")]
     public string PrisonerModel { get; set; } = "";
+}
+public class VolumeConfig
+{
+    [YamlMember(Alias = "warden_set_volume")]
+    public float WardenSetVolume { get; set; } = 1.0f;
+
+    [YamlMember(Alias = "warden_removed_volume")]
+    public float WardenRemovedVolume { get; set; } = 1.0f;
+
+    [YamlMember(Alias = "warden_killed_volume")]
+    public float WardenKilledVolume { get; set; } = 1.0f;
 }

@@ -1,283 +1,205 @@
-using CSTimer = CounterStrikeSharp.API.Modules.Timers.Timer;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using static Jailbreak.Jailbreak;
 using CounterStrikeSharp.API.Modules.Utils;
-using Microsoft.Extensions.Logging;
-using CounterStrikeSharp.API.Modules.Admin;
-using CounterStrikeSharp.API.Modules.Timers;
+using System.Drawing;
 
 namespace Jailbreak;
 
+public enum JBRole
+{
+    Warden,
+    Prisoner,
+    Guardian,
+    Rebel,
+    Freeday,
+    None
+
+}
 public class JBPlayer : IDisposable
 {
-    // +--------------------+
-    // | CORE PROPERTIES    |
-    // +--------------------+
-    public readonly CCSPlayerController? Controller;
-    public readonly ulong SteamID;
-    public readonly string Name;
-    private readonly ILogger _logger;
-    private readonly BasePlugin _plugin;
-
-    // +--------------------+
-    // | Jailbreak Roles    |
-    // +--------------------+
+    public CCSPlayerController Controller { get; private set; }
+    public CCSPlayerPawn PlayerPawn { get; private set; }
+    public string PlayerName => Controller.PlayerName ?? "";
     public JBRole Role { get; private set; } = JBRole.None;
-    public bool IsWarden { get; private set; } = false;
-    public bool IsPrisoner => Role == JBRole.Prisoner;
-    public bool IsGuard => Role == JBRole.Guard;
-
-    // +--------------------+
-    // | Jailbreak Status   |
-    // +--------------------+
-    public bool IsMuted { get; private set; } = false;
-    public bool IsRebel { get; private set; } = false;
-    public bool IsInLastRequest { get; private set; } = false;
-    public bool IsFreeday { get; private set; } = false;
-
-    // +--------------------+
-    // | Jailbreak Events   |
-    // +--------------------+
-    public event Action<JBPlayer>? OnRoleChanged;
-    public event Action<JBPlayer, bool>? OnWardenStatusChanged;
-    public event Action<JBPlayer, bool>? OnRebelStatusChanges;
-
-    // +--------------------+
-    // | Jailbreak Timers   |
-    // +--------------------+
-    public CSTimer? RoundStartMute = null;
-
-    // +--------------------+
-    // | Constructor        |
-    // +--------------------+
-    public JBPlayer(CCSPlayerController controller, ILogger logger, BasePlugin plugin)
+    public bool IsWarden => Role == JBRole.Warden;
+    public bool IsRebel => Role == JBRole.Rebel;
+    public bool IsFreeday => Role == JBRole.Freeday;
+    public bool IsValid => Controller.IsValid && Controller.PlayerPawn.Value?.IsValid == true;
+    public string WardenModel => Instance.Config.Models.WardenModel;
+    public string GuardianModel => Instance.Config.Models.GuardianModel;
+    public string PrisonerModel => Instance.Config.Models.PrisonerModel;
+    public event Action<JBPlayer, JBRole>? OnPlayerRoleChanged;
+    private Color DefaultColor => Color.FromArgb(255, 255, 255, 255);
+    public JBPlayer(CCSPlayerController controller, CCSPlayerPawn playerPawn)
     {
         Controller = controller;
-        SteamID = controller.SteamID;
-        Name = controller.PlayerName ?? "Unknown";
-        _logger = logger;
-        _plugin = plugin;
-
-        UpdateRole();
+        PlayerPawn = playerPawn;
     }
-
-    // +--------------------+
-    // | Validation         |
-    // +--------------------+
-    public bool IsValid => Controller?.IsValid == true && Controller.PlayerPawn?.IsValid == true;
-    public bool IsAlive => Controller?.PlayerPawn.Value?.Health > 0;
-    public bool IsConnected => Controller?.Connected == PlayerConnectedState.PlayerConnected;
-
-    // +--------------------+
-    // | HTML Management    |
-    // +--------------------+
-    public readonly Dictionary<CCSPlayerController, string> HtmlMessages = new();
-
-    // +--------------------+
-    // | Role Management    |
-    // +--------------------+
-    public void UpdateRole()
+    public void SetWarden(bool state)
     {
-        if (!IsValid) return;
-
-        var oldRole = Role;
-        Role = Controller!.Team switch
+        if (state && !IsWarden)
         {
-            CsTeam.CounterTerrorist => JBRole.Guard,
-            CsTeam.Terrorist => JBRole.Prisoner,
-            _ => JBRole.None
-        };
+            SetRole(JBRole.Warden);
+            ConfigureWarden();
 
-        if (oldRole != Role)
-        {
-            if (Role != JBRole.Guard)
-            {
-                SetWarden(false);
-            }
-
-            if (Role != JBRole.Prisoner)
-            {
-                SetRebel(false);
-                SetLastRequest(false);
-            }
-
-            OnRoleChanged?.Invoke(this);
-        }
-    }
-    public void SetWarden(bool isWarden)
-    {
-        if (!IsGuard && isWarden) return;
-
-        var oldStatus = IsWarden;
-        IsWarden = isWarden;
-
-        if (isWarden)
-        {
-
-        }
-
-        if (oldStatus != IsWarden)
-        {
-            OnWardenStatusChanged?.Invoke(this, IsWarden);
-        }
-    }
-    public void SetRebel(bool isRebel, string reason = "")
-    {
-        if (!IsPrisoner) return;
-
-        var oldStatus = IsRebel;
-        IsRebel = isRebel;
-
-        if (isRebel)
-        {
-
-        }
-
-        if (oldStatus != isRebel)
-        {
-            OnRebelStatusChanges?.Invoke(this, isRebel);
-        }
-    }
-    public void SetLastRequest(bool inLR)
-    {
-        if (!IsPrisoner) return;
-        IsInLastRequest = inLR;
-    }
-    public void SetFreeday(bool freeDay)
-    {
-        if (!IsPrisoner) return;
-        IsFreeday = freeDay;
-    }
-    public void SetMute(bool mute)
-    {
-        IsMuted = mute;
-
-        if (mute)
-        {
-            if (!Controller!.VoiceFlags.HasFlag(VoiceFlags.Muted))
-                Controller!.VoiceFlags = VoiceFlags.Muted;
         }
         else
         {
-            if (Controller!.VoiceFlags.HasFlag(VoiceFlags.Muted))
-                Controller!.VoiceFlags = VoiceFlags.Normal;
+            ClearWarden();
+
+            if (Controller.Team == CsTeam.CounterTerrorist)
+            {
+                SetRole(JBRole.Guardian);
+            }
+            else if (Controller.Team == CsTeam.Terrorist)
+            {
+                SetRole(JBRole.Prisoner);
+            }
+            else
+            {
+                SetRole(JBRole.None);
+            }
         }
     }
-
-    // +--------------------+
-    // | Messaging          |
-    // +--------------------+
-    public void PrinToChat(string message)
+    public void SetRebel(bool state)
     {
-        if (!IsValid) return;
-        Controller!.PrintToChat(message);
-    }
-    public void PrintToCenter(string message)
-    {
-        if (!IsValid) return;
-        Controller!.PrintToCenter(message);
-    }
-    public void PrintToAlert(string message)
-    {
-        if (!IsValid) return;
-        Controller!.PrintToCenterAlert(message);
-    }
-    public void PrintToHtml(string message, float duration)
-    {
-        if (!IsValid) return;
-
-        if (HtmlMessages.ContainsKey(Controller!))
-            HtmlMessages.Remove(Controller!);
-
-        HtmlMessages.Add(Controller!, message);
-        _plugin.AddTimer(duration, () =>
+        if (state && Role == JBRole.Prisoner)
         {
-            if (HtmlMessages.ContainsKey(Controller!))
-                HtmlMessages.Remove(Controller!);
+            SetColor(Color.Red);
+            SetRole(JBRole.Rebel);
+        }
+        else
+        {
+            SetColor(DefaultColor);
+
+            if (Controller.Team == CsTeam.Terrorist)
+                SetRole(JBRole.Prisoner);
+            else if (Controller.Team == CsTeam.CounterTerrorist)
+                SetRole(JBRole.Guardian);
+            else
+                SetRole(JBRole.None);
+        }
+    }
+    public void SetFreeday(bool state)
+    {
+        if (state && Role == JBRole.Prisoner)
+        {
+            SetColor(Color.Green);
+            SetRole(JBRole.Freeday);
+        }
+        else
+        {
+            SetColor(DefaultColor);
+
+            if (Controller.Team == CsTeam.Terrorist)
+                SetRole(JBRole.Prisoner);
+            else if (Controller.Team == CsTeam.CounterTerrorist)
+                SetRole(JBRole.Guardian);
+            else
+                SetRole(JBRole.None);
+        }
+    }
+    public void SetRole(JBRole role)
+    {
+        Role = role;
+        OnPlayerRoleChanged?.Invoke(this, role);
+    }
+    public void OnPlayerSpawn()
+    {
+        Server.NextFrame(() =>
+        {
+            if (Role == JBRole.Prisoner)
+            {
+                if (!string.IsNullOrEmpty(PrisonerModel))
+                    PlayerPawn.SetModel(PrisonerModel);
+            }
+            else if (Role == JBRole.Guardian)
+            {
+                // it isn't possible for an active Warden to just get spawned, so we can safetly only set Guardian model.
+                if (!string.IsNullOrEmpty(GuardianModel))
+                    PlayerPawn.SetModel(GuardianModel);
+            }
         });
     }
-
-    // +--------------------+
-    // | Round Management   |
-    // +--------------------+
-    public void OnRoundStart()
+    public void OnChangeTeam(CsTeam team)
     {
-        IsRebel = false;
-        IsInLastRequest = false;
-        IsFreeday = false;
-        UpdateRole();
-
-        if (IsPrisoner && IsValid)
+        if (team == CsTeam.Terrorist)
         {
-            if (Instance.Config.Prisoner.RoundStartMuteDuration > 0)
+            SetRole(JBRole.Prisoner);
+            if (IsWarden)
+                SetWarden(false);
+        }
+        else if (team == CsTeam.CounterTerrorist)
+        {
+            if (Role != JBRole.Warden)
             {
-                bool skip = Instance.Config.Prisoner.SkipMuteFlags.Count > 0
-                    && Instance.Config.Prisoner.SkipMuteFlags.Any(flag => AdminManager.PlayerHasPermissions(Controller, flag));
-
-                if (!IsMuted && !skip)
-                {
-                    SetMute(true);
-
-                    int muteDuration = Instance.Config.Prisoner.RoundStartMuteDuration;
-
-                    RoundStartMute = _plugin.AddTimer(1.0f, () =>
-                    {
-                        muteDuration--;
-
-                        if (muteDuration <= 0)
-                        {
-                            if (IsMuted)
-                                SetMute(false);
-
-
-                            RoundStartMute?.Kill();
-                            RoundStartMute = null;
-                        }
-
-                        if (IsValid && IsPrisoner)
-                        {
-                            PrintToHtml(Instance.Localizer["round_start_mute", muteDuration], 1.0f);
-                        }
-                    }, TimerFlags.REPEAT);
-
-                    PrintToHtml(Instance.Localizer["round_start_mute", muteDuration], 1.0f);
-                }
+                SetRole(JBRole.Guardian);
             }
         }
-    }
-    public void OnRoundEnd()
-    {
-        SetWarden(false);
-
-        if (IsPrisoner && IsValid)
+        else
         {
-            if (Instance.Config.Prisoner.UnmutePrisonerOnRoundEnd)
-            {
-                if (IsMuted)
-                    SetMute(false);
-            }
+            SetRole(JBRole.None);
+            if (IsWarden)
+                SetWarden(false);
         }
     }
-    public void OnDisconnect()
+    public void Print(string hud, string message, int duration = 0)
     {
-        if (HtmlMessages.ContainsKey(Controller!))
-            HtmlMessages.Remove(Controller!);
+        switch (hud)
+        {
+            case "chat":
+                Controller.PrintToChat(message);
+                break;
+            case "center":
+                Controller.PrintToCenter(message);
+                break;
+            case "alert":
+                Controller.PrintToCenterAlert(message);
+                break;
+            case "html":
+                Controller.PrintToHtml(message, duration);
+                break;
+        }
     }
+    private void ConfigureWarden()
+    {
+        // we call everyting on NextFrame for safety
+        Server.NextFrame(() =>
+        {
+            SetColor(Color.FromName(Instance.Config.Warden.WardenColor));
 
-    // +--------------------+
-    // | Dispose            |
-    // +--------------------+
+            if (!string.IsNullOrEmpty(WardenModel))
+                PlayerPawn.SetModel(WardenModel);
+        });
+    }
+    private void ClearWarden()
+    {
+        Server.NextFrame(() =>
+        {
+            SetColor(DefaultColor);
+
+            if (Controller.Team == CsTeam.CounterTerrorist)
+            {
+                if (!string.IsNullOrEmpty(GuardianModel))
+                    PlayerPawn.SetModel(GuardianModel);
+            }
+            else if (Controller.Team == CsTeam.Terrorist)
+            {
+                if (!string.IsNullOrEmpty(PrisonerModel))
+                    PlayerPawn.SetModel(PrisonerModel);
+            }
+        });
+    }
+    public void SetColor(Color color)
+    {
+
+        PlayerPawn.RenderMode = RenderMode_t.kRenderTransColor;
+        PlayerPawn.Render = color;
+        Utilities.SetStateChanged(PlayerPawn, "CBaseModelEntity", "m_clrRender");
+    }
     public void Dispose()
     {
-
+        SetRole(JBRole.None);
     }
-
-
-}
-public enum JBRole
-{
-    Prisoner,
-    Guard,
-    None
 }

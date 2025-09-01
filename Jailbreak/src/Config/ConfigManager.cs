@@ -162,7 +162,7 @@ public class ConfigManager : IDisposable
         return new ModelsConfig
         {
             WardenModel = loaded.WardenModel ?? defaults.WardenModel,
-            GuardModel = loaded.GuardModel ?? defaults.GuardModel,
+            GuardianModel = loaded.GuardianModel ?? defaults.GuardianModel,
             PrisonerModel = loaded.PrisonerModel ?? defaults.PrisonerModel
         };
     }

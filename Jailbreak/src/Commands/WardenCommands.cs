@@ -1,5 +1,7 @@
+using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Commands;
+using CounterStrikeSharp.API.Modules.Utils;
 using static Jailbreak.Jailbreak;
 
 namespace Jailbreak;
@@ -17,67 +19,85 @@ public static class WardenCommands
             Instance.AddCommand($"css_{cmd}", "Give up Warden", Command_GiveUpWarden);
         }
     }
-    private static void Command_TakeWarden(CCSPlayerController? player, CommandInfo info)
+    private static void Command_TakeWarden(CCSPlayerController? controller, CommandInfo info)
     {
-        if (player == null)
+        if (controller == null)
             return;
 
-        var jbPlayer = JBPlayerManagement.GetOrCreate(player);
+        JBPlayer jbPlayer = JBPlayerManagement.GetOrCreate(controller);
+        JBPlayer? currentWarden = JBPlayerManagement.GetWarden();
 
-        if (jbPlayer.IsPrisoner)
+        if (!controller.PawnIsAlive)
+            return;
+
+        if (jbPlayer.Role == JBRole.Prisoner)
         {
-            jbPlayer.PrinToChat(Instance.Localizer["prefix"] + Instance.Localizer["only_guard"]);
+            info.ReplyToCommand(Instance.Localizer["prefix"] + Instance.Localizer["cant_become_warden_as_t"]);
             return;
         }
 
-        if (JBPlayerManagement.GetWarden() != null)
+        if (currentWarden != null)
         {
-            jbPlayer.PrintToHtml(Instance.Localizer["aleardy_warden", JBPlayerManagement.GetWarden()!.Name], 3);
+            info.ReplyToCommand(Instance.Localizer["prefix"] + Instance.Localizer["aleardy_warden", currentWarden.PlayerName]);
             return;
         }
 
         jbPlayer.SetWarden(true);
+        jbPlayer.Print("chat", Instance.Localizer["prefix"] + Instance.Localizer["warden_take"]);
 
-        List<JBPlayer> jbPlayers = JBPlayerManagement.GetAllPlayers();
+        Library.PrintToAlertAll(Instance.Localizer["warden_take_alert", jbPlayer.PlayerName]);
 
-        foreach (var jbP in jbPlayers)
+        if (!string.IsNullOrEmpty(Instance.Config.Warden.WardenSetSound))
         {
-            jbP.PrintToHtml(Instance.Localizer["new_warden", jbPlayer.Name], 3);
-
-            if (!string.IsNullOrEmpty(Instance.Config.Warden.WardenSetSound))
-                jbP.Controller?.ExecuteClientCommand($"play {Instance.Config.Warden.WardenSetSound}");
-
+            foreach (var player in Utilities.GetPlayers())
+            {
+                RecipientFilter filter = [player];
+                player.EmitSound(Instance.Config.Warden.WardenSetSound, filter, Instance.Config.GlobalVolume.WardenSetVolume);
+            }
         }
+
     }
-    private static void Command_GiveUpWarden(CCSPlayerController? player, CommandInfo info)
+    private static void Command_GiveUpWarden(CCSPlayerController? controller, CommandInfo info)
     {
-        if (player == null)
+        if (controller == null)
             return;
 
-        var jbPlayer = JBPlayerManagement.GetOrCreate(player);
+        JBPlayer jbPlayer = JBPlayerManagement.GetOrCreate(controller);
+        JBPlayer? currentWarden = JBPlayerManagement.GetWarden();
 
-        if (jbPlayer.IsPrisoner)
+        if (jbPlayer.Role == JBRole.Prisoner)
         {
-            jbPlayer.PrinToChat(Instance.Localizer["prefix"] + Instance.Localizer["only_guard"]);
-            return;
-        }
-
-        if (!jbPlayer.IsWarden)
-        {
-            jbPlayer.PrinToChat(Instance.Localizer["prefix"] + Instance.Localizer["not_warden"]);
+            info.ReplyToCommand(Instance.Localizer["prefix"] + Instance.Localizer["you_are_not_warden"]);
             return;
         }
 
-        jbPlayer.SetWarden(false);
-
-        List<JBPlayer> jbPlayers = JBPlayerManagement.GetAllPlayers();
-
-        foreach (var jbP in jbPlayers)
+        if (currentWarden != jbPlayer)
         {
-            jbP.PrintToHtml(Instance.Localizer["warden_gave_up", jbPlayer.Name, Instance.Config.Warden.Commands.TakeWarden.FirstOrDefault()!], 3);
-
-            if (!string.IsNullOrEmpty(Instance.Config.Warden.WardenRemovedSound))
-                jbP.Controller?.ExecuteClientCommand($"play {Instance.Config.Warden.WardenRemovedSound}");
+            info.ReplyToCommand(Instance.Localizer["prefix"] + Instance.Localizer["you_are_not_warden"]);
+            return;
         }
+
+        currentWarden.SetWarden(false);
+        currentWarden.Print("chat", Instance.Localizer["prefix"] + Instance.Localizer["gave_up_on_warden"]);
+
+        Library.PrintToAlertAll(Instance.Localizer["warden_gave_up", currentWarden.PlayerName, Instance.Config.Warden.Commands.TakeWarden.FirstOrDefault()!]);
+
+        if (!string.IsNullOrEmpty(Instance.Config.Warden.WardenRemovedSound))
+        {
+            foreach (var player in Utilities.GetPlayers())
+            {
+                RecipientFilter filter = [player];
+                player.EmitSound(Instance.Config.Warden.WardenRemovedSound, filter, Instance.Config.GlobalVolume.WardenRemovedVolume);
+            }
+        }
+
+        Instance.AddTimer(5.0f, () =>
+        {
+            if (JBPlayerManagement.GetWarden() == null)
+            {
+                Library.AssignRandomWarden();
+                Library.PrintToCenterAll(Instance.Localizer["warden_take_alert", JBPlayerManagement.GetWarden()?.PlayerName ?? ""]);
+            }
+        });
     }
 }

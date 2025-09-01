@@ -1,9 +1,13 @@
 {
     "prefix": "{green}[JB]{default} ",
-    "round_start_mute": "All prisoners are muted for <font color='red'>{0}</font> seconds.",
-    "new_warden": "<font color='cyan'>{0}</font> is the new Warden!",
-    "aleardy_warden": "<font color='cyan'>{0}</font> is the current Warden.",
-    "warden_gave_up": "<font color='cyan'>{0}</font> gave up on Warden<br>Use <font color='yellow'>!{1}</font> to be the new one!",
-    "only_guard": "Only {blue}Guardians{default} can use this command.",
-    "not_warden": "You're not {blue}Warden{default}."
+    "aleardy_warden": "{blue}{0}{default} is aleardy Warden.",
+    "cant_become_warden_as_t": "You can't become {blue}Warden{default} as {orange}Prisoner{default}.",
+    "warden_take": "You are now {blue}Warden{default}. Use {lime}!whelp{default} for more informations!",
+    "warden_take_alert": "{0} is the new Warden!!!",
+    "you_are_not_warden": "You must be {blue}Warden{default} in order to use this command!",
+    "gave_up_on_warden": "You gave up on being {blue}Warden{default}.",
+    "warden_gave_up": "{0} gave up on being Warden!\nUse !{1} to be the new one.",
+    "warden_died": "Warden died!\n Use !{0} to be the new one.",
+    "warden_killed_by": "{blue}Warden{default} was killed by {red}{0}{default}. He is now a {darkred}Rebel{default}!",
+    "became_rebel": "{0} became a REBEL!!!"
 }

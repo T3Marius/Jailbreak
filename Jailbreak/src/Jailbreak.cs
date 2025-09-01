@@ -15,7 +15,6 @@ public class Jailbreak : BasePlugin
     public override string ModuleVersion => "1.0.0";
     public static Jailbreak Instance { get; set; } = new();
     public JailbreakConfig Config => _configManager?.Config ?? new JailbreakConfig();
-
     public override void OnAllPluginsLoaded(bool hotReload)
     {
 
@@ -36,20 +35,20 @@ public class Jailbreak : BasePlugin
         Events.RegisterListeners();
 
         WardenCommands.Register();
-
-        JBPlayerManagement.Initialize(Logger);
     }
     public override void Unload(bool hotReload)
     {
         _configManager?.Dispose();
     }
 
-    // this will be keep for testing purposes.
     [ConsoleCommand("css_roletest")]
-    public void Command_Test(CCSPlayerController player, CommandInfo info)
+    public void OnRoleTest(CCSPlayerController player, CommandInfo info)
     {
-        var jbPlayer = JBPlayerManagement.GetOrCreate(player);
+        if (player == null)
+            return;
 
-        jbPlayer.PrintToHtml($"Your role is: <font color='red'>{jbPlayer.Role}</font>", 5);
+        JBPlayer jBPlayer = JBPlayerManagement.GetOrCreate(player);
+
+        player.PrintToChat($"Your role is: {jBPlayer.Role}");
     }
 }
