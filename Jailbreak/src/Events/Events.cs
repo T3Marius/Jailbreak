@@ -3,26 +3,54 @@ using CounterStrikeSharp.API.Core;
 using static Jailbreak.Jailbreak;
 using CounterStrikeSharp.API.Modules.Utils;
 using CounterStrikeSharp.API;
+using CounterStrikeSharp.API.Modules.Memory;
+using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
 using Microsoft.Extensions.Logging;
+using CounterStrikeSharp.API.Modules.Cvars;
 
 namespace Jailbreak;
 
 public static class Events
 {
+    public static bool g_IsBoxActive = false;
+    public static void RegisterVirtualFunctions()
+    {
+        VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Hook(OnTakeDamage, HookMode.Pre);
+    }
     public static void RegisterEventsHandlers()
     {
         Instance.RegisterEventHandler<EventPlayerTeam>(OnPlayerTeam);
         Instance.RegisterEventHandler<EventPlayerSpawned>(OnPlayerSpawned);
         Instance.RegisterEventHandler<EventPlayerDisconnect>(OnPlayerDisconnect);
-        Instance.RegisterEventHandler<EventPlayerConnectFull>(OnPlayerConnectFull);
         Instance.RegisterEventHandler<EventPlayerDeath>(OnPlayerDeath);
         Instance.RegisterEventHandler<EventRoundStart>(OnRoundStart);
+        Instance.RegisterEventHandler<EventRoundEnd>(OnRoundEnd);
         Instance.RegisterEventHandler<EventPlayerHurt>(OnPlayerHurt);
     }
     public static void RegisterListeners()
     {
         Instance.RegisterListener<OnServerPrecacheResources>(OnServerPrecacheResources);
         Instance.RegisterListener<OnTick>(OnTick);
+    }
+    private static HookResult OnTakeDamage(DynamicHook hook)
+    {
+        CEntityInstance entity = hook.GetParam<CEntityInstance>(0);
+        CTakeDamageInfo info = hook.GetParam<CTakeDamageInfo>(1);
+
+        var ability = info.Ability.Value;
+        if (ability == null)
+            return HookResult.Continue;
+
+        if (entity.DesignerName != "player")
+            return HookResult.Continue;
+
+        var attacker = new CCSPlayerController(ability.Handle);
+        var victim = new CCSPlayerController(entity.Handle);
+
+        if (g_IsBoxActive && attacker.Team == victim.Team && victim.Team != CsTeam.Terrorist)
+            return HookResult.Handled;
+
+        return HookResult.Continue;
     }
     private static HookResult OnPlayerTeam(EventPlayerTeam @event, GameEventInfo info)
     {
@@ -43,7 +71,6 @@ public static class Events
             return HookResult.Continue;
 
         JBPlayer jbPlayer = JBPlayerManagement.GetOrCreate(controller);
-
         jbPlayer.OnPlayerSpawn();
 
         return HookResult.Continue;
@@ -61,17 +88,6 @@ public static class Events
 
         return HookResult.Continue;
     }
-    private static HookResult OnPlayerConnectFull(EventPlayerConnectFull @event, GameEventInfo info)
-    {
-        CCSPlayerController? controller = @event.Userid;
-        if (controller == null)
-            return HookResult.Continue;
-
-        JBPlayer jbPlayer = JBPlayerManagement.GetOrCreate(controller);
-        jbPlayer.OnPlayerRoleChanged += OnPlayerRoleChanged;
-
-        return HookResult.Continue;
-    }
     private static HookResult OnPlayerDeath(EventPlayerDeath @event, GameEventInfo info)
     {
         CCSPlayerController? victimController = @event.Userid;
@@ -82,6 +98,9 @@ public static class Events
 
         JBPlayer victim = JBPlayerManagement.GetOrCreate(victimController);
         JBPlayer attacker = JBPlayerManagement.GetOrCreate(attackerController);
+
+        if (SpecialDayManagement.GetActiveDay() != null)
+            return HookResult.Continue;
 
         if (victim == attacker)
         {
@@ -151,6 +170,14 @@ public static class Events
         foreach (var rebel in currentRebels)
             rebel.SetRebel(false);
 
+        g_IsBoxActive = false;
+        ConVar.Find("mp_teammates_are_enemies")?.SetValue(false);
+
+        SpecialDayManagement.OnRoundStart();
+
+        if (SpecialDayManagement.GetActiveDay() != null)
+            return HookResult.Continue;
+
         Instance.AddTimer(5.0f, () =>
         {
             if (JBPlayerManagement.GetWarden() == null)
@@ -159,6 +186,12 @@ public static class Events
                 Library.PrintToCenterAll(Instance.Localizer["warden_take_alert", JBPlayerManagement.GetWarden()?.PlayerName ?? ""]);
             }
         });
+
+        return HookResult.Continue;
+    }
+    private static HookResult OnRoundEnd(EventRoundEnd @event, GameEventInfo info)
+    {
+        SpecialDayManagement.OnRoundEnd();
 
         return HookResult.Continue;
     }
@@ -174,6 +207,9 @@ public static class Events
             return HookResult.Continue;
 
         if (attackerController.Team == CsTeam.CounterTerrorist)
+            return HookResult.Continue;
+
+        if (SpecialDayManagement.GetActiveDay() != null)
             return HookResult.Continue;
 
 
@@ -213,9 +249,23 @@ public static class Events
             }
         }
     }
-    private static void OnPlayerRoleChanged(JBPlayer jbPlayer, JBRole role)
+    public static void OnPlayerRoleChanged(JBPlayer jbPlayer, JBRole role)
     {
-        Instance.Logger.LogInformation("{0} role was changed to {1}", jbPlayer.PlayerName, role);
+        //Instance.Logger.LogInformation("{0} role was changed to {1}", jbPlayer.PlayerName, role); this works
+    }
+    public static void Dispose()
+    {
+        VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Unhook(OnTakeDamage, HookMode.Pre);
+
+        Instance.DeregisterEventHandler<EventPlayerTeam>(OnPlayerTeam);
+        Instance.DeregisterEventHandler<EventPlayerSpawned>(OnPlayerSpawned);
+        Instance.DeregisterEventHandler<EventPlayerDisconnect>(OnPlayerDisconnect);
+        Instance.DeregisterEventHandler<EventPlayerDeath>(OnPlayerDeath);
+        Instance.DeregisterEventHandler<EventRoundStart>(OnRoundStart);
+        Instance.DeregisterEventHandler<EventPlayerHurt>(OnPlayerHurt);
+
+        Instance.RemoveListener<OnTick>(OnTick);
+        Instance.RemoveListener<OnServerPrecacheResources>(OnServerPrecacheResources);
     }
 
 }
