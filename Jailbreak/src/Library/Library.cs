@@ -1,5 +1,6 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Cvars;
 using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Utils;
 using static Jailbreak.Jailbreak;
@@ -55,5 +56,23 @@ public static class Library
             if (GlobalHtmlMessages.ContainsKey(player))
                 GlobalHtmlMessages.Remove(player);
         });
+    }
+    public static void StartBox(string callerName = "")
+    {
+        ConVar.Find("mp_teammates_are_enemies")?.SetValue(true);
+
+        Events.g_IsBoxActive = true;
+        Server.ExecuteCommand("sv_teamid_overhead 0");
+
+        Server.PrintToChatAll(Instance.Localizer["prefix"] + Instance.Localizer["box_started", callerName]);
+    }
+    public static void StopBox(string callerName = "")
+    {
+        ConVar.Find("mp_teammates_are_enemies")?.SetValue(false);
+
+        Events.g_IsBoxActive = false;
+        Server.ExecuteCommand("sv_teamid_overhead 1");
+
+        Server.PrintToChatAll(Instance.Localizer["prefix"] + Instance.Localizer["box_stopped", callerName]);
     }
 }
