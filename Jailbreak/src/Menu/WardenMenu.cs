@@ -53,6 +53,7 @@ public static class WardenMenu
                 }
             }
         });
+
         menu.AddOption(Instance.Localizer.ForPlayer(jbPlayer.Controller, "select_random_prisoner<option>"), (p, o) =>
         {
             if (jbPlayer.IsWarden)
@@ -73,12 +74,93 @@ public static class WardenMenu
                 }
             }
         });
+
         menu.AddOption(Instance.Localizer.ForPlayer(jbPlayer.Controller, "select_special_day<option>"), (p, o) =>
         {
             if (jbPlayer.IsWarden)
                 SpecialDaysMenu.Display(jbPlayer, menu);
         });
 
+        menu.AddOption(Instance.Localizer.ForPlayer(jbPlayer.Controller, "give_freeday<option>"), (p, o) =>
+        {
+            if (jbPlayer.IsWarden)
+            {
+                List<CCSPlayerController> validPlayers = Utilities.GetPlayers().Where(p => p.Team == CsTeam.Terrorist && p.IsValid).ToList();
+
+                OpenGiveFreedayMenu(jbPlayer, menu, validPlayers);
+            }
+        });
+
+        menu.AddOption(Instance.Localizer.ForPlayer(jbPlayer.Controller, "remove_freeday<option>"), (p, o) =>
+        {
+            if (jbPlayer.IsWarden)
+            {
+                List<CCSPlayerController> validPlayers = Utilities.GetPlayers().Where(p => p.Team == CsTeam.Terrorist && p.IsValid).ToList();
+
+                OpenRemoveFreedayMenu(jbPlayer, menu, validPlayers);
+            }
+        });
+
         MenuManager.OpenMainMenu(jbPlayer.Controller, menu);
+    }
+    private static void OpenGiveFreedayMenu(JBPlayer jbPlayer, IT3Menu parentMenu, List<CCSPlayerController> validPlayers)
+    {
+        IT3Menu menu = MenuManager.CreateMenu(Instance.Localizer["give_freeday<menu>"]);
+        menu.IsSubMenu = true;
+        menu.ParentMenu = parentMenu;
+
+
+        foreach (var prisonerController in validPlayers)
+        {
+            JBPlayer prisonerJb = JBPlayerManagement.GetOrCreate(prisonerController);
+
+            if (prisonerJb.IsFreeday)
+                continue;
+
+            menu.AddOption(prisonerJb.PlayerName, (p, o) =>
+            {
+                if (jbPlayer.IsWarden)
+                {
+                    Server.NextFrame(() =>
+                    {
+                        prisonerJb.SetFreeday(true);
+                    });
+
+                    Server.PrintToChatAll(Instance.Localizer["prefix"] + Instance.Localizer["freeday_gave", prisonerJb.PlayerName]);
+                    menu.Close(jbPlayer.Controller);
+                }
+            });
+        }
+
+        MenuManager.OpenSubMenu(jbPlayer.Controller, menu);
+    }
+    private static void OpenRemoveFreedayMenu(JBPlayer jbPlayer, IT3Menu parentMenu, List<CCSPlayerController> validPlayers)
+    {
+        IT3Menu menu = MenuManager.CreateMenu(Instance.Localizer["remove_freeday<menu>"]);
+        menu.IsSubMenu = true;
+        menu.ParentMenu = parentMenu;
+
+
+        foreach (var prisonerController in validPlayers)
+        {
+            JBPlayer prisonerJb = JBPlayerManagement.GetOrCreate(prisonerController);
+
+            if (!prisonerJb.IsFreeday)
+                continue;
+
+
+            menu.AddOption(prisonerJb.PlayerName, (p, o) =>
+            {
+                if (jbPlayer.IsWarden)
+                {
+                    prisonerJb.SetFreeday(false);
+
+                    Server.PrintToChatAll(Instance.Localizer["prefix"] + Instance.Localizer["freeday_removed", prisonerJb.PlayerName]);
+                    menu.Close(jbPlayer.Controller);
+                }
+            });
+        }
+
+        MenuManager.OpenSubMenu(jbPlayer.Controller, menu);
     }
 }
