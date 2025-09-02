@@ -197,10 +197,12 @@ public class JBPlayer : IDisposable
     }
     public void SetColor(Color color)
     {
-
-        PlayerPawn.RenderMode = RenderMode_t.kRenderTransColor;
-        PlayerPawn.Render = color;
-        Utilities.SetStateChanged(PlayerPawn, "CBaseModelEntity", "m_clrRender");
+        Server.NextFrame(() =>
+        {
+            PlayerPawn.RenderMode = RenderMode_t.kRenderTransColor;
+            PlayerPawn.Render = color;
+            Utilities.SetStateChanged(PlayerPawn, "CBaseModelEntity", "m_clrRender");
+        });
     }
     public void Dispose()
     {
