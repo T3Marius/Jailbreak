@@ -2,7 +2,9 @@ using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Commands;
+using T3MenuSharedApi;
 using Jailbreak.Config;
+using CounterStrikeSharp.API.Core.Capabilities;
 
 namespace Jailbreak;
 
@@ -15,9 +17,11 @@ public class Jailbreak : BasePlugin
     public override string ModuleVersion => "1.0.0";
     public static Jailbreak Instance { get; set; } = new();
     public JailbreakConfig Config => _configManager?.Config ?? new JailbreakConfig();
+    public static IT3MenuManager MenuManager = null!;
     public override void OnAllPluginsLoaded(bool hotReload)
     {
-
+        if (MenuManager == null)
+            MenuManager = new PluginCapability<IT3MenuManager>("t3menu:manager").Get() ?? throw new Exception("T3MenuAPI not found!");
     }
     public override void Load(bool hotReload)
     {
@@ -31,14 +35,18 @@ public class Jailbreak : BasePlugin
 
         _configManager.Initialize();
 
+        Events.RegisterVirtualFunctions();
         Events.RegisterEventsHandlers();
         Events.RegisterListeners();
+
+        SpecialDayManagement.RegisterDay(new NoScopeDay());
 
         WardenCommands.Register();
     }
     public override void Unload(bool hotReload)
     {
         _configManager?.Dispose();
+        Events.Dispose();
     }
 
     [ConsoleCommand("css_roletest")]
