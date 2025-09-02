@@ -49,15 +49,4 @@ public class Jailbreak : BasePlugin
         _configManager?.Dispose();
         Events.Dispose();
     }
-
-    [ConsoleCommand("css_roletest")]
-    public void OnRoleTest(CCSPlayerController player, CommandInfo info)
-    {
-        if (player == null)
-            return;
-
-        JBPlayer jBPlayer = JBPlayerManagement.GetOrCreate(player);
-
-        player.PrintToChat($"Your role is: {jBPlayer.Role}");
-    }
 }
