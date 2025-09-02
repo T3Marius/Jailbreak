@@ -144,4 +144,7 @@ public class DaysConfig
 {
     [YamlMember(Alias = "cooldown_in_rounds")]
     public int CooldownInRounds { get; set; } = 3;
+
+    [YamlMember(Alias = "no_scope_round")]
+    public bool NoScopeRound { get; set; } = true;
 }
