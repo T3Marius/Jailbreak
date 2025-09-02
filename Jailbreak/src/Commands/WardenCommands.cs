@@ -35,6 +35,9 @@ public static class WardenCommands
         JBPlayer jbPlayer = JBPlayerManagement.GetOrCreate(controller);
         JBPlayer? currentWarden = JBPlayerManagement.GetWarden();
 
+        if (SpecialDayManagement.GetActiveDay() != null)
+            return;
+
         if (!controller.PawnIsAlive)
             return;
 
@@ -72,6 +75,9 @@ public static class WardenCommands
 
         JBPlayer jbPlayer = JBPlayerManagement.GetOrCreate(controller);
         JBPlayer? currentWarden = JBPlayerManagement.GetWarden();
+
+        if (SpecialDayManagement.GetActiveDay() != null)
+            return;
 
         if (jbPlayer.Role == JBRole.Prisoner)
         {
