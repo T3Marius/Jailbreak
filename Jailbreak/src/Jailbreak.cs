@@ -39,7 +39,8 @@ public class Jailbreak : BasePlugin
         Events.RegisterEventsHandlers();
         Events.RegisterListeners();
 
-        SpecialDayManagement.RegisterDay(new NoScopeDay());
+        if (Config.DaysConfig.NoScopeRound)
+            SpecialDayManagement.RegisterDay(new NoScopeDay());
 
         WardenCommands.Register();
     }
