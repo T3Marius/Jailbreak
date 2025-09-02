@@ -28,6 +28,9 @@ public class JailbreakConfig
     [YamlMember(Alias = "global_volume")]
     public VolumeConfig GlobalVolume { get; set; } = new();
 
+    [YamlMember(Alias = "special_days")]
+    public DaysConfig DaysConfig { get; set; } = new();
+
     public string[] Validate()
     {
         var errors = new List<string>();
@@ -108,6 +111,12 @@ public class WardenCommandsConfig
 
     [YamlMember(Alias = "close_cells")]
     public List<string> CloseCells { get; set; } = ["c", "close"];
+
+    [YamlMember(Alias = "warden_menu")]
+    public List<string> WardenMenu { get; set; } = ["wmenu"];
+
+    [YamlMember(Alias = "special_days_menu")]
+    public List<string> SpecialDaysMenu { get; set; } = ["sd", "specialday"];
 }
 public class ModelsConfig
 {
@@ -130,4 +139,9 @@ public class VolumeConfig
 
     [YamlMember(Alias = "warden_killed_volume")]
     public float WardenKilledVolume { get; set; } = 1.0f;
+}
+public class DaysConfig
+{
+    [YamlMember(Alias = "cooldown_in_rounds")]
+    public int CooldownInRounds { get; set; } = 3;
 }
