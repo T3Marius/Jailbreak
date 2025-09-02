@@ -9,5 +9,20 @@
     "warden_gave_up": "{0} gave up on being Warden!\nUse !{1} to be the new one.",
     "warden_died": "Warden died!\n Use !{0} to be the new one.",
     "warden_killed_by": "{blue}Warden{default} was killed by {red}{0}{default}. He is now a {darkred}Rebel{default}!",
-    "became_rebel": "{0} became a REBEL!!!"
+    "became_rebel": "{0} became a REBEL!!!",
+    "doors_opened_by": "{blue}{0}{default} opened all cells doors!",
+    "doors_closed_by": "{blue}{0}{default} closed all cells doors!",
+    "box_started": "Box {green}enabled{default} by {blue}{0}{default}",
+    "box_stopped": "Box {red}disabled{default} by {blue}{0}{default}",
+    "warden_menu<title>": "<font color='blue'>Warden</font> Menu",
+    "special_days_menu<title>": "Special Days",
+    "toggle_cells<option>": "Toggle Cells",
+    "toggle_box<option>": "Toggle Box",
+    "select_special_day<option>": "Select Special Day",
+    "select_random_prisoner<option>": "Select Random Prisoner",
+    "no_prisoner_avalible": "There is no prisoner avalible right now!",
+    "random_prisoner_selected": "{blue}Warden{default} selected random prisoner: {orange}{0}{default}.",
+    "day_on_cooldown": "{yellow}Special Days{default} are on cooldown. Please wait {lime}{0} rounds{default} before trying again.",
+    "special_day_pending": "{blue}{0}{default} set next day to be: {green}{1}{default}.",
+    "no_scope_day<name>": "No Scope"
 }
