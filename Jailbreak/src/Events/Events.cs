@@ -163,12 +163,16 @@ public static class Events
     {
         JBPlayer? currentWarden = JBPlayerManagement.GetWarden();
         List<JBPlayer> currentRebels = JBPlayerManagement.GetAllRebels();
+        List<JBPlayer> currentFreedays = JBPlayerManagement.GetAllFreedays();
 
         if (currentWarden != null)
             currentWarden.SetWarden(false);
 
         foreach (var rebel in currentRebels)
             rebel.SetRebel(false);
+
+        foreach (var freeday in currentFreedays)
+            freeday.SetFreeday(false);
 
         g_IsBoxActive = false;
         ConVar.Find("mp_teammates_are_enemies")?.SetValue(false);
