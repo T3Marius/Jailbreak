@@ -18,6 +18,14 @@ public static class WardenCommands
         {
             Instance.AddCommand($"css_{cmd}", "Give up Warden", Command_GiveUpWarden);
         }
+        foreach (var cmd in Instance.Config.Warden.Commands.WardenMenu)
+        {
+            Instance.AddCommand($"css_{cmd}", "Open Warden Menu", Command_WardenMenu);
+        }
+        foreach (var cmd in Instance.Config.Warden.Commands.SpecialDaysMenu)
+        {
+            Instance.AddCommand($"css_{cmd}", "Open Special-Days Menu", Command_SpecialDays);
+        }
     }
     private static void Command_TakeWarden(CCSPlayerController? controller, CommandInfo info)
     {
@@ -99,5 +107,35 @@ public static class WardenCommands
                 Library.PrintToCenterAll(Instance.Localizer["warden_take_alert", JBPlayerManagement.GetWarden()?.PlayerName ?? ""]);
             }
         });
+    }
+    private static void Command_WardenMenu(CCSPlayerController? controller, CommandInfo info)
+    {
+        if (controller == null)
+            return;
+
+        JBPlayer jbPlayer = JBPlayerManagement.GetOrCreate(controller);
+
+        if (!jbPlayer.IsWarden)
+        {
+            info.ReplyToCommand(Instance.Localizer["prefix"] + Instance.Localizer["you_are_not_warden"]);
+            return;
+        }
+
+        WardenMenu.Display(jbPlayer);
+    }
+    private static void Command_SpecialDays(CCSPlayerController? controller, CommandInfo info)
+    {
+        if (controller == null)
+            return;
+
+        JBPlayer jbPlayer = JBPlayerManagement.GetOrCreate(controller);
+
+        if (!jbPlayer.IsWarden)
+        {
+            info.ReplyToCommand(Instance.Localizer["prefix"] + Instance.Localizer["you_are_not_warden"]);
+            return;
+        }
+
+        SpecialDaysMenu.Display(jbPlayer);
     }
 }
