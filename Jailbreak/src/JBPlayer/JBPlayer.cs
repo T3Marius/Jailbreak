@@ -3,6 +3,7 @@ using CounterStrikeSharp.API.Core;
 using static Jailbreak.Jailbreak;
 using CounterStrikeSharp.API.Modules.Utils;
 using System.Drawing;
+using CounterStrikeSharp.API.Core.Translations;
 
 namespace Jailbreak;
 
@@ -43,9 +44,12 @@ public class JBPlayer : IDisposable
             SetRole(JBRole.Warden);
             ConfigureWarden();
 
+            if (!Controller.IsBot)
+                WardenMenu.Display(this);
         }
         else
         {
+
             ClearWarden();
 
             if (Controller.Team == CsTeam.CounterTerrorist)
