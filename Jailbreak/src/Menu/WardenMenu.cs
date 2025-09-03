@@ -105,7 +105,7 @@ public static class WardenMenu
     }
     private static void OpenGiveFreedayMenu(JBPlayer jbPlayer, IT3Menu parentMenu, List<CCSPlayerController> validPlayers)
     {
-        IT3Menu menu = MenuManager.CreateMenu(Instance.Localizer["give_freeday<menu>"]);
+        IT3Menu menu = MenuManager.CreateMenu(Instance.Localizer["give_freeday_menu<title>"]);
         menu.IsSubMenu = true;
         menu.ParentMenu = parentMenu;
 
@@ -136,7 +136,7 @@ public static class WardenMenu
     }
     private static void OpenRemoveFreedayMenu(JBPlayer jbPlayer, IT3Menu parentMenu, List<CCSPlayerController> validPlayers)
     {
-        IT3Menu menu = MenuManager.CreateMenu(Instance.Localizer["remove_freeday<menu>"]);
+        IT3Menu menu = MenuManager.CreateMenu(Instance.Localizer["remove_freeday_menu<title>"]);
         menu.IsSubMenu = true;
         menu.ParentMenu = parentMenu;
 

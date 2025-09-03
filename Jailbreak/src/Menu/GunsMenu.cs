@@ -52,6 +52,7 @@ public static class GunsMenu
     public static void Display(JBPlayer jbPlayer)
     {
         IT3Menu menu = MenuManager.CreateMenu(Instance.Localizer.ForPlayer(jbPlayer.Controller, "guns_menu<title>"));
+        menu.FreezePlayer = false;
 
         foreach (var kvp in GlobalRifles)
         {
@@ -73,6 +74,7 @@ public static class GunsMenu
         IT3Menu menu = MenuManager.CreateMenu(Instance.Localizer.ForPlayer(jbPlayer.Controller, "guns_menu_pistol<title>"));
         menu.IsSubMenu = true;
         menu.ParentMenu = parentMenu;
+        menu.FreezePlayer = false;
 
         foreach (var kvp in GlobalPistols)
         {
