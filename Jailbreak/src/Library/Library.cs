@@ -3,7 +3,9 @@ using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Cvars;
 using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Utils;
+using CSTimer = CounterStrikeSharp.API.Modules.Timers.Timer;
 using static Jailbreak.Jailbreak;
+using CounterStrikeSharp.API.Modules.Timers;
 
 namespace Jailbreak;
 
@@ -11,6 +13,27 @@ public static class Library
 {
     private static Random random = new Random();
     public static readonly Dictionary<CCSPlayerController, string> GlobalHtmlMessages = new();
+    public static CSTimer StartTimer(int seconds, Action<int> onTick, Action onFinished)
+    {
+        int remaining = seconds;
+
+        CSTimer? timer = null;
+
+        timer = Instance.AddTimer(1.0f, () =>
+        {
+            remaining--;
+
+            if (remaining > 0)
+                onTick?.Invoke(remaining);
+            else
+            {
+                onFinished?.Invoke();
+                timer?.Kill();
+            }
+        }, TimerFlags.REPEAT);
+
+        return timer;
+    }
     public static void AssignRandomWarden()
     {
         // for now, i won't exclude bots as i need it for testing.
