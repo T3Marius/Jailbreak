@@ -31,6 +31,9 @@ public class JailbreakConfig
     [YamlMember(Alias = "special_days")]
     public DaysConfig DaysConfig { get; set; } = new();
 
+    [YamlMember(Alias = "guns_menu_config")]
+    public GunsMenuConfig GunsMenu { get; set; } = new();
+
     public string[] Validate()
     {
         var errors = new List<string>();
@@ -147,4 +150,12 @@ public class DaysConfig
 
     [YamlMember(Alias = "no_scope_round")]
     public bool NoScopeRound { get; set; } = true;
+}
+public class GunsMenuConfig
+{
+    [YamlMember(Alias = "guns_menu_commands")]
+    public List<string> GunsMenuCommands { get; set; } = ["guns", "g", "gmenu", "gunsmenu"];
+
+    [YamlMember(Alias = "exclude_weapons")]
+    public List<string> ExcludeWeapons { get; set; } = [""];
 }
