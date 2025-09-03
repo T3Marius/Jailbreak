@@ -10,6 +10,7 @@
     "warden_died": "Warden died!\n Use !{0} to be the new one.",
     "warden_killed_by": "{blue}Warden{default} was killed by {red}{0}{default}. He is now a {darkred}Rebel{default}!",
     "became_rebel": "{0} became a REBEL!!!",
+    "no_acces": "{red}You don't have acces to use this command yet!",
     "doors_opened_by": "{blue}{0}{default} opened all cells doors!",
     "doors_closed_by": "{blue}{0}{default} closed all cells doors!",
     "box_started": "Box {green}enabled{default} by {blue}{0}{default}",
