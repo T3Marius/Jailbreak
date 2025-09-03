@@ -17,8 +17,10 @@
     "box_stopped": "Box {red}disabled{default} by {blue}{0}{default}",
     "warden_menu<title>": "<font color='blue'>Warden</font> Menu",
     "special_days_menu<title>": "Special Days",
-    "give_freeday<menu>": "Give Freeday",
-    "remove_freeday<menu>": "Remove Freeday",
+    "give_freeday_menu<title>": "Give Freeday",
+    "remove_freeday_menu<title>": "Remove Freeday",
+    "guns_menu<title>": "Select Rifle",
+    "guns_menu_pistol<title>": "Select Pistol",
     "toggle_cells<option>": "Toggle Cells",
     "toggle_box<option>": "Toggle Box",
     "give_freeday<option>": "Give Freeday",
@@ -32,5 +34,6 @@
     "freeday_gave": "{blue}Warden{default} gave freeday to {orange}{0}{default}.",
     "freeday_removed": "{blue}Warden{default} removed freeday from {orange}{0}{default}.",
     "day_starting_html": "Special Day <font color='yellow'>{0}</font><br>Starts in <font color='green'>{1}</font> seconds!",
-    "no_scope_day<name>": "No Scope"
+    "no_scope_day<name>": "No Scope",
+    "teleport_day<name>": "Teleport Day"
 }
