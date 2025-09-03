@@ -5,7 +5,6 @@ using CounterStrikeSharp.API.Modules.Utils;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
-using Microsoft.Extensions.Logging;
 using CounterStrikeSharp.API.Modules.Cvars;
 
 namespace Jailbreak;
