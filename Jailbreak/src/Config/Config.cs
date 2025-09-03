@@ -150,6 +150,9 @@ public class DaysConfig
 
     [YamlMember(Alias = "no_scope_round")]
     public bool NoScopeRound { get; set; } = true;
+
+    [YamlMember(Alias = "teleport_round")]
+    public bool TeleportRound { get; set; } = true;
 }
 public class GunsMenuConfig
 {
