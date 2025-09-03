@@ -42,7 +42,11 @@ public class Jailbreak : BasePlugin
         if (Config.DaysConfig.NoScopeRound)
             SpecialDayManagement.RegisterDay(new NoScopeDay());
 
+        if (Config.DaysConfig.TeleportRound)
+            SpecialDayManagement.RegisterDay(new TeleportDay());
+
         WardenCommands.Register();
+        GunsMenuCommands.Register();
     }
     public override void Unload(bool hotReload)
     {
