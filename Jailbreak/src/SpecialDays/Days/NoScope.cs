@@ -18,48 +18,42 @@ public class NoScopeDay : ISpecialDay
     public Random random = new Random();
     public List<string> ScopeRifles = ["weapon_awp", "weapon_ssg08", "weapon_scar20", "weapon_g3sg1"];
     public static List<ushort> NoScopeWeaponsDefIndex = [(ushort)ItemDefinition.AWP, (ushort)ItemDefinition.SSG_08, (ushort)ItemDefinition.SCAR_20, (ushort)ItemDefinition.G3SG1];
-    public CSTimer? NoScopeStart;
+    private int DelayCooldown = 10;
     public void Start()
     {
-        foreach (var player in Utilities.GetPlayers())
-        {
-            int delayCooldown = 15;
-            NoScopeStart = Instance.AddTimer(1.0f, () =>
+        Library.StartTimer(DelayCooldown,
+            remaining =>
             {
-                delayCooldown--;
-                player.RemoveWeapons(); // constantly remove weapons
+                DelayCooldown--;
 
-                if (delayCooldown <= 0)
+                foreach (var player in Utilities.GetPlayers())
                 {
-                    foreach (var player in Utilities.GetPlayers())
+                    player.RemoveWeapons(); // constantly remove until countdown ends
+                    player.PrintToHtml(Instance.Localizer["day_starting_html", Name, DelayCooldown], 1.0f);
+                }
+            },
+
+            () =>
+            {
+                foreach (var player in Utilities.GetPlayers())
+                {
+                    player.RemoveWeapons();
+
+                    string randomScopeWeapon = ScopeRifles[random.Next(ScopeRifles.Count)];
+                    Server.NextFrame(() =>
                     {
-                        player.RemoveWeapons();
-
-                        string randomScopeWeapon = ScopeRifles[random.Next(ScopeRifles.Count)];
-
-                        Server.NextFrame(() =>
-                        {
-                            player.GiveNamedItem(randomScopeWeapon);
-                        });
-                    }
-
-                    Instance.RegisterListener<OnTick>(OnTick);
-                    VirtualFunctions.CCSPlayer_ItemServices_CanAcquireFunc.Hook(OnCanAcquireFunc, HookMode.Pre);
-
-                    ConVar.Find("mp_teammates_are_enemies")?.SetValue(true);
-                    Server.ExecuteCommand("sv_teamid_overhead 0");
-
-                    NoScopeStart?.Kill();
-                    NoScopeStart = null;
-                }
-                else
-                {
-                    player.PrintToHtml(Instance.Localizer["day_starting_html", Name, delayCooldown], 1.0f);
+                        player.GiveNamedItem(randomScopeWeapon);
+                    });
                 }
 
-            }, TimerFlags.REPEAT);
-        }
+                Instance.RegisterListener<OnTick>(OnTick);
+                VirtualFunctions.CCSPlayer_ItemServices_CanAcquireFunc.Hook(OnCanAcquireFunc, HookMode.Pre);
+
+                ConVar.Find("mp_teammates_are_enemies")?.SetValue(true);
+                Server.ExecuteCommand("sv_teamid_overhead 0");
+            });
     }
+
     public void End()
     {
         Instance.RemoveListener<OnTick>(OnTick);
