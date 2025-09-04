@@ -197,6 +197,7 @@ public class JBPlayer : IDisposable
     }
     public void SetColor(Color color)
     {
+        // call this in next frame so we avoid bugs
         Server.NextFrame(() =>
         {
             PlayerPawn.RenderMode = RenderMode_t.kRenderTransColor;
