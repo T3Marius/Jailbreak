@@ -25,6 +25,7 @@ public static class Events
         Instance.RegisterEventHandler<EventRoundStart>(OnRoundStart);
         Instance.RegisterEventHandler<EventRoundEnd>(OnRoundEnd);
         Instance.RegisterEventHandler<EventPlayerHurt>(OnPlayerHurt);
+        Instance.RegisterEventHandler<EventWeaponFire>(OnWeaponFire);
     }
     public static void RegisterListeners()
     {
@@ -227,6 +228,26 @@ public static class Events
         }
         return HookResult.Continue;
     }
+    private static HookResult OnWeaponFire(EventWeaponFire @event, GameEventInfo info)
+    {
+        CCSPlayerController? fireController = @event.Userid;
+        if (fireController == null)
+            return HookResult.Continue;
+
+        JBPlayer jbPlayer = JBPlayerManagement.GetOrCreate(fireController);
+
+        if (SpecialDayManagement.GetActiveDay() != null)
+            return HookResult.Continue; // ignore when special day is active
+
+        if (jbPlayer.Role == JBRole.Prisoner && !jbPlayer.IsRebel) // only set rebel if he's prisoner and is not aleardy rebel.
+        {
+            // set prisoner rebel, as he used an weapon on a normal day.
+            jbPlayer.SetRebel(true);
+            Library.PrintToAlertAll(Instance.Localizer["became_rebel", jbPlayer.PlayerName]);
+        }
+
+        return HookResult.Continue;
+    }
     private static void OnServerPrecacheResources(ResourceManifest resource)
     {
         if (!string.IsNullOrEmpty(Instance.Config.Models.WardenModel))
@@ -266,6 +287,7 @@ public static class Events
         Instance.DeregisterEventHandler<EventPlayerDeath>(OnPlayerDeath);
         Instance.DeregisterEventHandler<EventRoundStart>(OnRoundStart);
         Instance.DeregisterEventHandler<EventPlayerHurt>(OnPlayerHurt);
+        Instance.DeregisterEventHandler<EventWeaponFire>(OnWeaponFire);
 
         Instance.RemoveListener<OnTick>(OnTick);
         Instance.RemoveListener<OnServerPrecacheResources>(OnServerPrecacheResources);
