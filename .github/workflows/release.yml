@@ -1,0 +1,57 @@
+name: Create Jailbreak Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*" # Trigger only on tags like v1.2.3
+
+permissions:
+  contents: write # Needed for releases
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Important for changelog history
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release
+
+      - name: Zip BuildOutput
+        run: |
+          zip -r jailbreak-${{ github.ref_name }}.zip BuildOutput
+
+      - name: Generate Changelog
+        id: changelog
+        run: |
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ || echo "")
+          if [ -z "$PREV_TAG" ]; then
+            echo "No previous tag found, showing all commits."
+            git log --pretty=format:"- %s" > CHANGELOG.md
+          else
+            echo "Previous tag: $PREV_TAG"
+            git log $PREV_TAG..HEAD --pretty=format:"- %s" > CHANGELOG.md
+          fi
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          cat CHANGELOG.md >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body: |
+            ## Changes in this release
+            ${{ steps.changelog.outputs.changelog }}
+          files: jailbreak-${{ github.ref_name }}.zip
