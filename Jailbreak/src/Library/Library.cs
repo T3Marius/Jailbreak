@@ -87,7 +87,7 @@ public static class Library
             return;
 
         pawn.ActualGravityScale = value;
-        Utilities.SetStateChanged(pawn, "CBaseEntity", "m_flActualGravityScale");
+        //Utilities.SetStateChanged(pawn, "CBaseEntity", "m_flActualGravityScale");
     }
     public static void SetSpeed(this CCSPlayerController player, float value)
     {
