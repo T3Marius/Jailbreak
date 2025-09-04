@@ -21,6 +21,11 @@ public class NoScopeDay : ISpecialDay
     private int DelayCooldown = 10;
     public void Start()
     {
+        foreach (var player in Utilities.GetPlayers())
+        {
+            player.SetGravity(0.3f);
+        }
+
         Library.StartTimer(DelayCooldown,
             remaining =>
             {
@@ -35,11 +40,11 @@ public class NoScopeDay : ISpecialDay
 
             () =>
             {
+                string randomScopeWeapon = ScopeRifles[random.Next(ScopeRifles.Count)]; // my stupid ass added this in foreach loop
                 foreach (var player in Utilities.GetPlayers())
                 {
                     player.RemoveWeapons();
 
-                    string randomScopeWeapon = ScopeRifles[random.Next(ScopeRifles.Count)];
                     Server.NextFrame(() =>
                     {
                         player.GiveNamedItem(randomScopeWeapon);
@@ -56,6 +61,11 @@ public class NoScopeDay : ISpecialDay
 
     public void End()
     {
+        foreach (var player in Utilities.GetPlayers())
+        {
+            player.SetGravity(1.0f);
+        }
+
         Instance.RemoveListener<OnTick>(OnTick);
         VirtualFunctions.CCSPlayer_ItemServices_CanAcquireFunc.Unhook(OnCanAcquireFunc, HookMode.Pre);
 
