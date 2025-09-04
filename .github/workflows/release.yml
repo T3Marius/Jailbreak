@@ -3,10 +3,10 @@ name: Create Jailbreak Release
 on:
   push:
     tags:
-      - "v*.*.*" # Trigger only on tags like v1.2.3
+      - "v*.*.*"
 
 permissions:
-  contents: write # Needed for releases
+  contents: write
 
 jobs:
   build:
@@ -16,7 +16,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Important for changelog history
+          fetch-depth: 0
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -32,7 +32,7 @@ jobs:
       - name: Zip BuildOutput
         run: |
           zip -r jailbreak-${{ github.ref_name }}.zip BuildOutput
-          
+
       - name: Generate Changelog
         id: changelog
         run: |
