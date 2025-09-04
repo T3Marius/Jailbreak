@@ -275,7 +275,7 @@ public static class Events
     }
     public static void OnPlayerRoleChanged(JBPlayer jbPlayer, JBRole role)
     {
-        //Instance.Logger.LogInformation("{0} role was changed to {1}", jbPlayer.PlayerName, role); this works
+        //Instance.Logger.LogInformation("{0} role was changed to {1}", jbPlayer.PlayerName, role); this works.
     }
     public static void Dispose()
     {
