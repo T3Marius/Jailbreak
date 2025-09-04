@@ -80,6 +80,24 @@ public static class Library
                 GlobalHtmlMessages.Remove(player);
         });
     }
+    public static void SetGravity(this CCSPlayerController player, float value)
+    {
+        CCSPlayerPawn? pawn = player.PlayerPawn.Value;
+        if (pawn == null)
+            return;
+
+        pawn.ActualGravityScale = value;
+        Utilities.SetStateChanged(pawn, "CBaseEntity", "m_flActualGravityScale");
+    }
+    public static void SetSpeed(this CCSPlayerController player, float value)
+    {
+        CCSPlayerPawn? pawn = player.PlayerPawn.Value;
+        if (pawn == null)
+            return;
+
+        pawn.VelocityModifier = value;
+        Utilities.SetStateChanged(pawn, "CCSPlayerPawn", "m_flVelocityModifier");
+    }
     public static void StartBox(string callerName = "")
     {
         ConVar.Find("mp_teammates_are_enemies")?.SetValue(true);
