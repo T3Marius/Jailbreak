@@ -26,6 +26,10 @@ public static class WardenCommands
         {
             Instance.AddCommand($"css_{cmd}", "Open Special-Days Menu", Command_SpecialDays);
         }
+        foreach (var cmd in Instance.Config.Warden.Commands.ToggleBox)
+        {
+            Instance.AddCommand($"css_{cmd}", "Toggles box", Command_ToggleBox);
+        }
     }
     private static void Command_TakeWarden(CCSPlayerController? controller, CommandInfo info)
     {
@@ -58,12 +62,12 @@ public static class WardenCommands
 
         Library.PrintToAlertAll(Instance.Localizer["warden_take_alert", jbPlayer.PlayerName]);
 
-        if (!string.IsNullOrEmpty(Instance.Config.Warden.WardenSetSound))
+        if (!string.IsNullOrEmpty(Instance.Config.Sounds.WardenSetSound))
         {
             foreach (var player in Utilities.GetPlayers())
             {
                 RecipientFilter filter = [player];
-                player.EmitSound(Instance.Config.Warden.WardenSetSound, filter, Instance.Config.GlobalVolume.WardenSetVolume);
+                player.EmitSound(Instance.Config.Sounds.WardenSetSound, filter, Instance.Config.GlobalVolume.WardenSetVolume);
             }
         }
 
@@ -96,12 +100,12 @@ public static class WardenCommands
 
         Library.PrintToAlertAll(Instance.Localizer["warden_gave_up", currentWarden.PlayerName, Instance.Config.Warden.Commands.TakeWarden.FirstOrDefault()!]);
 
-        if (!string.IsNullOrEmpty(Instance.Config.Warden.WardenRemovedSound))
+        if (!string.IsNullOrEmpty(Instance.Config.Sounds.WardenRemovedSound))
         {
             foreach (var player in Utilities.GetPlayers())
             {
                 RecipientFilter filter = [player];
-                player.EmitSound(Instance.Config.Warden.WardenRemovedSound, filter, Instance.Config.GlobalVolume.WardenRemovedVolume);
+                player.EmitSound(Instance.Config.Sounds.WardenRemovedSound, filter, Instance.Config.GlobalVolume.WardenRemovedVolume);
             }
         }
 
@@ -143,5 +147,28 @@ public static class WardenCommands
         }
 
         SpecialDaysMenu.Display(jbPlayer);
+    }
+    private static void Command_ToggleBox(CCSPlayerController? controller, CommandInfo info)
+    {
+        if (controller == null)
+            return;
+
+        JBPlayer jbPlayer = JBPlayerManagement.GetOrCreate(controller);
+
+        if (SpecialDayManagement.GetActiveDay() != null)
+            return;
+
+        if (!jbPlayer.IsWarden)
+        {
+            info.ReplyToCommand(Instance.Localizer["prefix"] + Instance.Localizer["you_are_not_warden"]);
+            return;
+        }
+
+        Events.g_IsBoxActive = !Events.g_IsBoxActive;
+
+        if (Events.g_IsBoxActive)
+            Library.StartBox(jbPlayer.PlayerName);
+        else
+            Library.StopBox(jbPlayer.PlayerName);
     }
 }
