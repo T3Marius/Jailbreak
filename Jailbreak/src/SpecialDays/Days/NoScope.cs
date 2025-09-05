@@ -40,7 +40,7 @@ public class NoScopeDay : ISpecialDay
 
             () =>
             {
-                string randomScopeWeapon = ScopeRifles[random.Next(ScopeRifles.Count)]; // my stupid ass added this in foreach loop
+                string randomScopeWeapon = ScopeRifles[random.Next(ScopeRifles.Count)];
                 foreach (var player in Utilities.GetPlayers())
                 {
                     player.RemoveWeapons();
