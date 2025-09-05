@@ -120,6 +120,14 @@ public static class Library
         Server.ExecuteCommand("sv_teamid_overhead 0");
 
         Server.PrintToChatAll(Instance.Localizer["prefix"] + Instance.Localizer["box_started", callerName]);
+
+        foreach (var player in Utilities.GetPlayers())
+        {
+            RecipientFilter filter = [player];
+            if (!string.IsNullOrEmpty(Instance.Config.Sounds.BoxStartSound))
+                player.EmitSound(Instance.Config.Sounds.BoxStartSound, filter, Instance.Config.GlobalVolume.BoxStartVolume);
+
+        }
     }
     public static void StopBox(string callerName = "")
     {
