@@ -87,21 +87,18 @@ public class NoScopeDay : ISpecialDay
 
         }
     }
-    private static HookResult OnCanAcquireFunc(DynamicHook hook)
+    public HookResult OnCanAcquireFunc(DynamicHook hook)
     {
         var econItem = hook.GetParam<CEconItemView>(1);
         ushort defIndex = (ushort)econItem.ItemDefinitionIndex;
 
-        ISpecialDay? activeDay = SpecialDayManagement.GetActiveDay();
 
-        if (activeDay != null && activeDay.Name == Instance.Localizer["no_scope_day<name>"])
+        if (!NoScopeWeaponsDefIndex.Contains(defIndex))
         {
-            if (!NoScopeWeaponsDefIndex.Contains(defIndex))
-            {
-                hook.SetReturn(AcquireResult.NotAllowedByProhibition);
-                return HookResult.Handled;
-            }
+            hook.SetReturn(AcquireResult.NotAllowedByProhibition);
+            return HookResult.Handled;
         }
+
 
         return HookResult.Continue;
     }
