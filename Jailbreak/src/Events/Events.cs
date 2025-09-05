@@ -86,6 +86,12 @@ public static class Events
         if (Library.GlobalHtmlMessages.ContainsKey(controller))
             Library.GlobalHtmlMessages.Remove(controller);
 
+        if (Library.GlobalFrozenPlayers.Contains(controller))
+            Library.GlobalFrozenPlayers.Remove(controller);
+
+        if (Library.PlayerSavedSpeed.ContainsKey(controller))
+            Library.PlayerSavedSpeed.Remove(controller);
+
         return HookResult.Continue;
     }
     private static HookResult OnPlayerDeath(EventPlayerDeath @event, GameEventInfo info)
@@ -272,6 +278,8 @@ public static class Events
                 // do nothing
             }
         }
+
+        Library.UpdateFrozenPlayers();
     }
     public static void OnPlayerRoleChanged(JBPlayer jbPlayer, JBRole role)
     {
