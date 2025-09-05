@@ -26,6 +26,7 @@ public class ZombieDay : ISpecialDay
         {
             player.Freeze(); // freeze zombies for PrepareTime
             player.RemoveWeapons();
+            player.TakesDamage = false; // enable god mode
             player.SetHealth(Instance.Config.DaysConfig.ZombieDayConfig.ZombiesHealth); // set zombie health
 
             Server.NextFrame(() => // call it on next frame because it might interact with prisoner model set.
@@ -51,6 +52,7 @@ public class ZombieDay : ISpecialDay
             foreach (var player in Utilities.GetPlayers().Where(p => p.Team == CsTeam.Terrorist))
             {
                 player.Unfreeze(); // unfreeze zombies
+                player.TakesDamage = true; // disable god mode
                 player.SetSpeed(1.1f); // slightly faster than humans
             }
 
