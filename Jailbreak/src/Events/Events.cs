@@ -12,6 +12,7 @@ namespace Jailbreak;
 public static class Events
 {
     public static bool g_IsBoxActive = false;
+
     public static void RegisterVirtualFunctions()
     {
         VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Hook(OnTakeDamage, HookMode.Pre);
@@ -105,7 +106,7 @@ public static class Events
         JBPlayer victim = JBPlayerManagement.GetOrCreate(victimController);
         JBPlayer attacker = JBPlayerManagement.GetOrCreate(attackerController);
 
-        if (SpecialDayManagement.GetActiveDay() != null)
+        if (SpecialDayManagement.GetActiveDay() != null) // we don't need to do anything while a special day is active
             return HookResult.Continue;
 
         if (victim == attacker)
@@ -116,12 +117,12 @@ public static class Events
 
                 Library.PrintToAlertAll(Instance.Localizer["warden_died", Instance.Config.Warden.Commands.TakeWarden.FirstOrDefault()!]);
 
-                if (!string.IsNullOrEmpty(Instance.Config.Warden.WardenRemovedSound))
+                if (!string.IsNullOrEmpty(Instance.Config.Sounds.WardenRemovedSound))
                 {
                     foreach (var player in Utilities.GetPlayers())
                     {
                         RecipientFilter filter = [player];
-                        player.EmitSound(Instance.Config.Warden.WardenRemovedSound, filter, Instance.Config.GlobalVolume.WardenRemovedVolume);
+                        player.EmitSound(Instance.Config.Sounds.WardenRemovedSound, filter, Instance.Config.GlobalVolume.WardenRemovedVolume);
                     }
                 }
 
@@ -145,12 +146,12 @@ public static class Events
             Server.PrintToChatAll(Instance.Localizer["prefix"] + Instance.Localizer["warden_killed_by", attacker.PlayerName]);
             Library.PrintToAlertAll(Instance.Localizer["warden_died", Instance.Config.Warden.Commands.TakeWarden.FirstOrDefault()!]);
 
-            if (!string.IsNullOrEmpty(Instance.Config.Warden.WardenKilledSound))
+            if (!string.IsNullOrEmpty(Instance.Config.Sounds.WardenKilledSound))
             {
                 foreach (var player in Utilities.GetPlayers())
                 {
                     RecipientFilter filter = [player];
-                    player.EmitSound(Instance.Config.Warden.WardenKilledSound, filter, Instance.Config.GlobalVolume.WardenKilledVolume);
+                    player.EmitSound(Instance.Config.Sounds.WardenKilledSound, filter, Instance.Config.GlobalVolume.WardenKilledVolume);
                 }
             }
             Instance.AddTimer(5.0f, () =>
@@ -161,6 +162,14 @@ public static class Events
                     Library.PrintToCenterAll(Instance.Localizer["warden_take_alert", JBPlayerManagement.GetWarden()?.PlayerName ?? ""]);
                 }
             });
+        }
+
+        // here we just announce that rebel x was killed by guard y
+        if (victim.IsRebel)
+        {
+            victim.SetRebel(false);
+
+            Server.PrintToChatAll(Instance.Localizer["prefix"] + Instance.Localizer["rebel_killed_by", victim.PlayerName, attacker.PlayerName]);
         }
 
         return HookResult.Continue;
@@ -264,6 +273,9 @@ public static class Events
 
         if (!string.IsNullOrEmpty(Instance.Config.Models.PrisonerModel))
             resource.AddResource(Instance.Config.Models.PrisonerModel);
+
+        foreach (var file in Instance.Config.Sounds.SoundEventFiles)
+            resource.AddResource(file);
     }
     private static void OnTick()
     {
