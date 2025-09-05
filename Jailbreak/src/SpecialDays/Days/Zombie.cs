@@ -88,7 +88,7 @@ public class ZombieDay : ISpecialDay
         var econItem = hook.GetParam<CEconItemView>(1);
         ushort defIndex = (ushort)econItem.ItemDefinitionIndex;
 
-        // how to do team chec? how do i get player param?
+        // how to do team check? how do i get player param?
         // for now, it works fine since if we get weapons from !guns we can use it.
 
         if (!AllowedZombieWeaponsDefIndex.Contains(defIndex))
