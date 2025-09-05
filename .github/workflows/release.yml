@@ -43,10 +43,10 @@ jobs:
           echo "" >> CHANGELOG.md
           if [ -z "$PREV_TAG" ]; then
             echo "No previous tag found, showing all commits."
-            git log --pretty=format:"- **%s**" >> CHANGELOG.md
+            git log --pretty=format:"- **%s** (%h)" >> CHANGELOG.md
           else
             echo "Previous tag: $PREV_TAG"
-            git log $PREV_TAG..HEAD --pretty=format:"- **%s**" >> CHANGELOG.md
+            git log $PREV_TAG..HEAD --pretty=format:"- **%s** (%h)" >> CHANGELOG.md
           fi
 
           echo "Generated changelog:"
