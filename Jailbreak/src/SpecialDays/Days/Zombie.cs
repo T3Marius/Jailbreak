@@ -4,6 +4,7 @@ using CounterStrikeSharp.API.Modules.Entities.Constants;
 using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
 using CounterStrikeSharp.API.Modules.Utils;
+using Microsoft.Extensions.Logging;
 using static Jailbreak.Jailbreak;
 
 namespace Jailbreak;
@@ -54,12 +55,12 @@ public class ZombieDay : ISpecialDay
                 player.TakesDamage = true; // disable god mode
                 player.SetSpeed(1.1f); // slightly faster than humans
             }
-
-            if (Instance.Config.DaysConfig.ZombieDayConfig.InfiniteReserve)
-                Instance.RegisterEventHandler<EventWeaponReload>(OnWeaponReload); // apply infinite clip & only register the event if enable
-
-            VirtualFunctions.CCSPlayer_ItemServices_CanAcquireFunc.Hook(OnCanAcquireFunc, HookMode.Pre);
         });
+
+        if (Instance.Config.DaysConfig.ZombieDayConfig.InfiniteReserve)
+            Instance.RegisterEventHandler<EventWeaponReload>(OnWeaponReload); // apply infinite clip & only register the event if enable
+
+        VirtualFunctions.CCSPlayer_ItemServices_CanAcquireFunc.Hook(OnCanAcquireFunc, HookMode.Pre);
     }
     public HookResult OnWeaponReload(EventWeaponReload @event, GameEventInfo info)
     {
@@ -67,18 +68,7 @@ public class ZombieDay : ISpecialDay
         if (controller == null || controller.Team != CsTeam.CounterTerrorist)
             return HookResult.Continue;
 
-        JBPlayer jbPlayer = JBPlayerManagement.GetOrCreate(controller);
-        if (jbPlayer.Role != JBRole.Guardian) // do another check just to be sure
-            return HookResult.Continue;
-
-        var activeWeapon = jbPlayer.PlayerPawn.WeaponServices?.ActiveWeapon.Value;
-
-
-        Instance.AddTimer(1.0f, () =>
-        {
-            if (activeWeapon != null)
-                activeWeapon.ReserveAmmo[0] = 100; // apply infinite reserve
-        });
+        Instance.AddTimer(3.0f, () => controller.SetReserve(100));
 
         return HookResult.Continue;
     }
