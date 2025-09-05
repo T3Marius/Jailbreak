@@ -45,6 +45,9 @@ public class Jailbreak : BasePlugin
         if (Config.DaysConfig.TeleportRound)
             SpecialDayManagement.RegisterDay(new TeleportDay());
 
+        if (Config.DaysConfig.ZombieRound)
+            SpecialDayManagement.RegisterDay(new ZombieDay());
+
         WardenCommands.Register();
         GunsMenuCommands.Register();
     }
