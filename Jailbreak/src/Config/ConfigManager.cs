@@ -151,7 +151,6 @@ public class ConfigManager : IDisposable
         {
             ConfigVersion = loaded.ConfigVersion > 0 ? loaded.ConfigVersion : defaults.ConfigVersion,
             Database = MergeDatabaseConfig(loaded.Database, defaults.Database),
-            Warden = MergeWardenConfig(loaded.Warden, defaults.Warden),
             Guard = MergeGuardConfig(loaded.Guard, defaults.Guard),
             Prisoner = MergePrisonerConfig(loaded.Prisoner, defaults.Prisoner),
             Models = MergeModelsConfig(loaded.Models, defaults.Models)
@@ -176,17 +175,6 @@ public class ConfigManager : IDisposable
             Pass = !string.IsNullOrEmpty(loaded.Pass) ? loaded.Pass : defaults.Pass,
             Port = loaded.Port > 0 ? loaded.Port : defaults.Port,
             SslMode = !string.IsNullOrEmpty(loaded.SslMode) ? loaded.SslMode : defaults.SslMode
-        };
-    }
-
-    private WardenConfig MergeWardenConfig(WardenConfig loaded, WardenConfig defaults)
-    {
-        return new WardenConfig
-        {
-            WardenSetSound = loaded.WardenSetSound ?? defaults.WardenSetSound,
-            WardenRemovedSound = loaded.WardenRemovedSound ?? defaults.WardenRemovedSound,
-            WardenKilledSound = loaded.WardenKilledSound ?? defaults.WardenKilledSound,
-            Commands = loaded.Commands ?? defaults.Commands,
         };
     }
 
