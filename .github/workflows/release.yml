@@ -39,7 +39,8 @@ jobs:
           VERSION=${GITHUB_REF_NAME}
           PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
 
-          echo "What's Changed in $VERSION" > CHANGELOG.md
+          echo "## What's Changed in $VERSION" > CHANGELOG.md
+          echo "" >> CHANGELOG.md
           if [ -z "$PREV_TAG" ]; then
             echo "No previous tag found, showing all commits."
             git log --pretty=format:"- **%s**" >> CHANGELOG.md
@@ -48,20 +49,11 @@ jobs:
             git log $PREV_TAG..HEAD --pretty=format:"- **%s**" >> CHANGELOG.md
           fi
 
+          echo "Generated changelog:"
           cat CHANGELOG.md
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           body_path: CHANGELOG.md
-          files: jailbreak-${{ github.ref_name }}.zip
-
-
-
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          body: |
-            ## Changes in this release
-            ${{ steps.changelog.outputs.changelog }}
           files: jailbreak-${{ github.ref_name }}.zip
