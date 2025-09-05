@@ -153,6 +153,28 @@ public class DaysConfig
 
     [YamlMember(Alias = "teleport_round")]
     public bool TeleportRound { get; set; } = true;
+
+    [YamlMember(Alias = "zombie_round")]
+    public bool ZombieRound { get; set; } = true;
+    public ZombieDayConfig ZombieDayConfig { get; set; } = new();
+
+}
+public class ZombieDayConfig
+{
+    [YamlMember(Alias = "zombies_health")]
+    public int ZombiesHealth = 5000;
+
+    [YamlMember(Alias = "enable_knockback")]
+    public bool EnableKnockback = false;
+
+    [YamlMember(Alias = "prepare_time_in_seconds")]
+    public int PrepareTimeInSeconds { get; set; } = 60;
+
+    [YamlMember(Alias = "zombies_model")]
+    public string ZombiesModel { get; set; } = "";
+
+    [YamlMember(Alias = "infinite_reserve")]
+    public bool InfiniteReserve { get; set; } = true;
 }
 public class GunsMenuConfig
 {
