@@ -25,6 +25,9 @@ public class JailbreakConfig
     [YamlMember(Alias = "models")]
     public ModelsConfig Models { get; set; } = new();
 
+    [YamlMember(Alias = "sounds_config")]
+    public Sounds_Config Sounds { get; set; } = new();
+
     [YamlMember(Alias = "global_volume")]
     public VolumeConfig GlobalVolume { get; set; } = new();
 
@@ -69,14 +72,6 @@ public class DatabaseConfig
 }
 public class WardenConfig
 {
-    [YamlMember(Alias = "warden_set_sound")]
-    public string WardenSetSound { get; set; } = "";
-
-    [YamlMember(Alias = "warden_removed_sound")]
-    public string WardenRemovedSound { get; set; } = "";
-
-    [YamlMember(Alias = "warden_killed_sound")]
-    public string WardenKilledSound { get; set; } = "";
 
     [YamlMember(Alias = "warden_color")]
     public string WardenColor { get; set; } = "Blue";
@@ -120,6 +115,9 @@ public class WardenCommandsConfig
 
     [YamlMember(Alias = "special_days_menu")]
     public List<string> SpecialDaysMenu { get; set; } = ["sd", "specialday"];
+
+    [YamlMember(Alias = "toggle_box")]
+    public List<string> ToggleBox { get; set; } = ["box"];
 }
 public class ModelsConfig
 {
@@ -142,6 +140,9 @@ public class VolumeConfig
 
     [YamlMember(Alias = "warden_killed_volume")]
     public float WardenKilledVolume { get; set; } = 1.0f;
+
+    [YamlMember(Alias = "box_start_volume")]
+    public float BoxStartVolume { get; set; } = 1.0f;
 }
 public class DaysConfig
 {
@@ -175,6 +176,28 @@ public class ZombieDayConfig
 
     [YamlMember(Alias = "infinite_reserve")]
     public bool InfiniteReserve { get; set; } = true;
+}
+public class Sounds_Config
+{
+    [YamlMember(Alias = "sound_event_files")]
+    public List<string> SoundEventFiles { get; set; } = [];
+
+    [YamlMember(Alias = "rebel_sound")]
+    public string RebelSound { get; set; } = "";
+
+    [YamlMember(Alias = "warden_set_sound")]
+    public string WardenSetSound { get; set; } = "";
+
+    [YamlMember(Alias = "warden_removed_sound")]
+    public string WardenRemovedSound { get; set; } = "";
+
+    [YamlMember(Alias = "warden_killed_sound")]
+    public string WardenKilledSound { get; set; } = "";
+
+    [YamlMember(Alias = "box_start_sound")]
+    public string BoxStartSound { get; set; } = "";
+
+
 }
 public class GunsMenuConfig
 {
