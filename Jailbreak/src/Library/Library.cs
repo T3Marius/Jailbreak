@@ -13,6 +13,8 @@ public static class Library
 {
     private static Random random = new Random();
     public static readonly Dictionary<CCSPlayerController, string> GlobalHtmlMessages = new();
+    public static readonly HashSet<CCSPlayerController> GlobalFrozenPlayers = new();
+    public static readonly Dictionary<CCSPlayerController, float> PlayerSavedSpeed = new();
     public static CSTimer StartTimer(int seconds, Action<int> onTick, Action onFinished)
     {
         int remaining = seconds;
@@ -98,6 +100,18 @@ public static class Library
         pawn.VelocityModifier = value;
         Utilities.SetStateChanged(pawn, "CCSPlayerPawn", "m_flVelocityModifier");
     }
+    public static void SetHealth(this CCSPlayerController player, int value)
+    {
+        CCSPlayerPawn? pawn = player.PlayerPawn.Value;
+        if (pawn == null)
+            return;
+
+        pawn.MaxHealth = value;
+        pawn.Health = value;
+
+        Utilities.SetStateChanged(pawn, "CBaseEntity", "m_iMaxHealth");
+        Utilities.SetStateChanged(pawn, "CBaseEntity", "m_iHealth");
+    }
     public static void StartBox(string callerName = "")
     {
         ConVar.Find("mp_teammates_are_enemies")?.SetValue(true);
@@ -115,5 +129,43 @@ public static class Library
         Server.ExecuteCommand("sv_teamid_overhead 1");
 
         Server.PrintToChatAll(Instance.Localizer["prefix"] + Instance.Localizer["box_stopped", callerName]);
+    }
+    public static void Freeze(this CCSPlayerController player)
+    {
+        CCSPlayerPawn? pawn = player.PlayerPawn.Value;
+        if (pawn == null)
+            return;
+
+        if (!PlayerSavedSpeed.ContainsKey(player))
+            PlayerSavedSpeed.Add(player, pawn.VelocityModifier);
+
+        if (!GlobalFrozenPlayers.Contains(player))
+            GlobalFrozenPlayers.Add(player);
+    }
+    public static void Unfreeze(this CCSPlayerController player)
+    {
+        CCSPlayerPawn? pawn = player.PlayerPawn.Value;
+        if (pawn == null)
+            return;
+
+        if (GlobalFrozenPlayers.Contains(player))
+            GlobalFrozenPlayers.Remove(player);
+
+        if (PlayerSavedSpeed.TryGetValue(player, out float savedSpeed))
+        {
+            pawn.VelocityModifier = savedSpeed;
+            PlayerSavedSpeed.Remove(player);
+        }
+
+    }
+    public static void UpdateFrozenPlayers()
+    {
+        foreach (var player in GlobalFrozenPlayers)
+        {
+            CCSPlayerPawn? pawn = player.PlayerPawn.Value;
+
+            if (pawn != null)
+                pawn.VelocityModifier = 0.0f;
+        }
     }
 }
