@@ -14,6 +14,7 @@ public class ZombieDay : ISpecialDay
     public string Name => Instance.Localizer["zombie_day<name>"];
     public int PrepareTime = Instance.Config.DaysConfig.ZombieDayConfig.PrepareTimeInSeconds;
     public string ZombieModel => Instance.Config.DaysConfig.ZombieDayConfig.ZombiesModel;
+
     public List<ushort> AllowedZombieWeaponsDefIndex = [(ushort)ItemDefinition.KNIFE_T, (ushort)ItemDefinition.KARAMBIT, (ushort)ItemDefinition.GUT_KNIFE,
     (ushort)ItemDefinition.FLIP_KNIFE, (ushort)ItemDefinition.BOWIE_KNIFE, (ushort)ItemDefinition.NOMAD_KNIFE, (ushort)ItemDefinition.TALON_KNIFE,
     (ushort)ItemDefinition.URSUS_KNIFE, (ushort)ItemDefinition.NAVAJA_KNIFE, (ushort)ItemDefinition.CLASSIC_KNIFE, (ushort)ItemDefinition.FALCHION_KNIFE,
