@@ -71,6 +71,18 @@ public static class Library
             player.PrintToHtml(message, duration);
         }
     }
+    public static void PrintToChatAll(string message)
+    {
+        string[] lines = message.Split('\n');
+        foreach (var player in Utilities.GetPlayers())
+        {
+            foreach (var line in lines)
+            {
+                if (!string.IsNullOrWhiteSpace(line))
+                    player.PrintToChat(line.Trim());
+            }
+        }
+    }
     public static void PrintToHtml(this CCSPlayerController player, string message, float duration)
     {
         if (GlobalHtmlMessages.ContainsKey(player))

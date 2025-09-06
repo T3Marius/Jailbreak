@@ -13,6 +13,8 @@ namespace Jailbreak;
 public class TeleportDay : ISpecialDay
 {
     public string Name => Instance.Localizer["teleport_day<name>"];
+    public string Description => Instance.Localizer["teleport_day<description>"];
+
     public bool g_IsTimerActive = false;
     private int DelayCooldown = 10;
     public void Start()

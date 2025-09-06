@@ -15,6 +15,8 @@ namespace Jailbreak;
 public class NoScopeDay : ISpecialDay
 {
     public string Name => Instance.Localizer["no_scope_day<name>"];
+    public string Description => Instance.Localizer["no_scope_day<description>"];
+
     public Random random = new Random();
     public List<string> ScopeRifles = ["weapon_awp", "weapon_ssg08", "weapon_scar20", "weapon_g3sg1"];
     public static List<ushort> NoScopeWeaponsDefIndex = [(ushort)ItemDefinition.AWP, (ushort)ItemDefinition.SSG_08, (ushort)ItemDefinition.SCAR_20, (ushort)ItemDefinition.G3SG1];

@@ -38,5 +38,9 @@
   "no_scope_day<name>": "No Scope",
   "teleport_day<name>": "Teleport Day",
   "zombie_day<name>": "Zombie Day",
-  "one_in_the_chamber_day<name>": "One In The Chamber"
+  "one_in_the_chamber_day<name>": "One In The Chamber Day",
+  "no_scope_day<description>": "▬▬▬▬▬ {yellow}NO SCOPE DAY{default} ▬▬▬▬▬\n>> No one can use scope in this round!\n>> Free For All: {green}True{default}\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬",
+  "teleport_day<description>": "▬▬▬▬▬ {yellow}TELEPORT DAY{default} ▬▬▬▬▬\n>> Shooting at someone switches your positions!\n>> Free For All: {green}True{default}\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬",
+  "zombie_day<description>": "▬▬▬▬▬ {yellow}ZOMBIE DAY{default} ▬▬▬▬▬\n>> All prisoners are zombies and have {red}{0}{default} health!\n>> Free For All: {red}False{default}\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬",
+  "one_in_the_chamber_day<description>": "▬▬▬▬▬ {yellow}OITC DAY{default} ▬▬▬▬▬\n>> Deagle only has 1 bullet and it's insta kill.\n>> Make a kill with deagle or knife to get bullets!\n>> Free For All: {green}True{default}\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
 }

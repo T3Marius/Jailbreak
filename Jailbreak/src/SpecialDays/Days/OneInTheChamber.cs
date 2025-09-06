@@ -1,5 +1,6 @@
 ﻿using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Cvars;
 using CounterStrikeSharp.API.Modules.Entities.Constants;
 using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
@@ -13,6 +14,8 @@ namespace Jailbreak;
 public class OneInTheChamber : ISpecialDay
 {
     public string Name => Instance.Localizer["one_in_the_chamber_day<name>"];
+    public string Description => Instance.Localizer["one_in_the_chamber_day<description>"];
+
     public bool g_IsTimerActive = false;
     public int DelayCooldown = 10;
     public List<ushort> AllowedOITCWeaponsDefIndex = [(ushort)ItemDefinition.KNIFE_T, (ushort)ItemDefinition.KARAMBIT, (ushort)ItemDefinition.GUT_KNIFE,
@@ -56,6 +59,10 @@ public class OneInTheChamber : ISpecialDay
         VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Hook(OnTakeDamage, HookMode.Pre);
 
         Instance.RegisterEventHandler<EventPlayerDeath>(OnPlayerDeath);
+
+        ConVar.Find("mp_teammates_are_enemies")?.SetValue(true);
+        Server.ExecuteCommand("sv_teamid_overhead 0");
+
     }
     public HookResult OnCanAcquireFunc(DynamicHook hook)
     {
@@ -146,5 +153,8 @@ public class OneInTheChamber : ISpecialDay
         VirtualFunctions.CCSPlayer_ItemServices_CanAcquireFunc.Unhook(OnCanAcquireFunc, HookMode.Pre);
 
         Instance.DeregisterEventHandler<EventPlayerDeath>(OnPlayerDeath);
+
+        ConVar.Find("mp_teammates_are_enemies")?.SetValue(false);
+        Server.ExecuteCommand("sv_teamid_overhead 1");
     }
 }

@@ -41,6 +41,7 @@ public static class SpecialDayManagement
             PendingDay = null;
 
             ActiveDay.Start();
+            Library.PrintToChatAll(ActiveDay.Description);
 
             CooldownInRounds = Instance.Config.DaysConfig.CooldownInRounds;
         }

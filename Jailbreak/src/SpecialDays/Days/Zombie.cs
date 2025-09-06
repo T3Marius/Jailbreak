@@ -12,6 +12,8 @@ namespace Jailbreak;
 public class ZombieDay : ISpecialDay
 {
     public string Name => Instance.Localizer["zombie_day<name>"];
+    public string Description => Instance.Localizer["zombie_day<description>", Instance.Config.DaysConfig.ZombieDayConfig.ZombiesHealth];
+
     public int PrepareTime = Instance.Config.DaysConfig.ZombieDayConfig.PrepareTimeInSeconds;
     public string ZombieModel => Instance.Config.DaysConfig.ZombieDayConfig.ZombiesModel;
 
