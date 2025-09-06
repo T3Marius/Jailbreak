@@ -6,9 +6,6 @@ namespace Jailbreak;
 
 public static class GunsMenuCommands
 {
-    // imma have to store active days name here :)) (i'm dumb)
-    private static string TeleportDayName => Instance.Localizer["teleport_day<name>"];
-    private static string NoScopeDayName => Instance.Localizer["no_scope_day<name>"];
     public static void Register()
     {
         foreach (var cmd in Instance.Config.GunsMenu.GunsMenuCommands)
