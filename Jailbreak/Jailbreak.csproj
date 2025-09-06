@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -14,10 +14,14 @@
 
   <ItemGroup>
     <PackageReference Include="YamlDotNet" Version="16.3.0" />
-    <PackageReference Include="CounterStrikeSharp.API" Version="1.0.337" PrivateAssets="all" ExcludeAssets="runtime" />
+    <PackageReference Include="CounterStrikeSharp.API" Version="1.0.339" PrivateAssets="all" ExcludeAssets="runtime" />
     <PackageReference Include="Dapper" Version="2.1.66" PrivateAssets="all" ExcludeAssets="runtime" />
     <PackageReference Include="MySqlConnector" Version="2.4.0" PrivateAssets="all" ExcludeAssets="runtime" />
   </ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\JailbreakApi\JailbreakApi.csproj"/>
+	</ItemGroup>
 
   	<ItemGroup>
 		<None Update="lang\**\*.*" CopyToOutputDirectory="PreserveNewest" />

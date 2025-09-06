@@ -4,6 +4,7 @@ using CounterStrikeSharp.API.Modules.Entities.Constants;
 using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
 using CounterStrikeSharp.API.Modules.Utils;
+using JailbreakApi;
 using Microsoft.Extensions.Logging;
 using static Jailbreak.Jailbreak;
 

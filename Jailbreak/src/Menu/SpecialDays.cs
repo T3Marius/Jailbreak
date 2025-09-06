@@ -1,4 +1,5 @@
 using CounterStrikeSharp.API.Core.Translations;
+using JailbreakApi;
 using static Jailbreak.Jailbreak;
 
 namespace Jailbreak;

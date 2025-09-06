@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jailbreak", "Jailbreak\Jailbreak.csproj", "{9728FB77-D631-4FF6-913A-5469CB1729F1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JailbreakApi", "JailbreakApi\JailbreakApi.csproj", "{379C4BFC-BF53-434C-8B00-E43C64745B14}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,8 +29,23 @@ Global
 		{9728FB77-D631-4FF6-913A-5469CB1729F1}.Release|x64.Build.0 = Release|Any CPU
 		{9728FB77-D631-4FF6-913A-5469CB1729F1}.Release|x86.ActiveCfg = Release|Any CPU
 		{9728FB77-D631-4FF6-913A-5469CB1729F1}.Release|x86.Build.0 = Release|Any CPU
+		{379C4BFC-BF53-434C-8B00-E43C64745B14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{379C4BFC-BF53-434C-8B00-E43C64745B14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{379C4BFC-BF53-434C-8B00-E43C64745B14}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{379C4BFC-BF53-434C-8B00-E43C64745B14}.Debug|x64.Build.0 = Debug|Any CPU
+		{379C4BFC-BF53-434C-8B00-E43C64745B14}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{379C4BFC-BF53-434C-8B00-E43C64745B14}.Debug|x86.Build.0 = Debug|Any CPU
+		{379C4BFC-BF53-434C-8B00-E43C64745B14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{379C4BFC-BF53-434C-8B00-E43C64745B14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{379C4BFC-BF53-434C-8B00-E43C64745B14}.Release|x64.ActiveCfg = Release|Any CPU
+		{379C4BFC-BF53-434C-8B00-E43C64745B14}.Release|x64.Build.0 = Release|Any CPU
+		{379C4BFC-BF53-434C-8B00-E43C64745B14}.Release|x86.ActiveCfg = Release|Any CPU
+		{379C4BFC-BF53-434C-8B00-E43C64745B14}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7E1F0E07-0B7A-4D39-BF70-EC1DD59ACD3A}
 	EndGlobalSection
 EndGlobal

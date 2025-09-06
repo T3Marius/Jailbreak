@@ -1,6 +1,7 @@
 using CounterStrikeSharp.API;
 using static Jailbreak.Jailbreak;
 using Microsoft.Extensions.Logging;
+using JailbreakApi;
 
 namespace Jailbreak;
 

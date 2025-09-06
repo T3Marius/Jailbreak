@@ -5,6 +5,7 @@ using CounterStrikeSharp.API.Modules.Commands;
 using T3MenuSharedApi;
 using Jailbreak.Config;
 using CounterStrikeSharp.API.Core.Capabilities;
+using JailbreakApi;
 
 namespace Jailbreak;
 
@@ -18,6 +19,7 @@ public class Jailbreak : BasePlugin
     public static Jailbreak Instance { get; set; } = new();
     public JailbreakConfig Config => _configManager?.Config ?? new JailbreakConfig();
     public static IT3MenuManager MenuManager = null!;
+    public SpecialDay SpecialDayApi { get; set; } = new SpecialDay();
     public override void OnAllPluginsLoaded(bool hotReload)
     {
         if (MenuManager == null)
@@ -26,6 +28,8 @@ public class Jailbreak : BasePlugin
     public override void Load(bool hotReload)
     {
         Instance = this;
+
+        Capabilities.RegisterPluginCapability(IJailbreakApi.Capability, () => SpecialDayApi);
 
         _configManager = new ConfigManager(Path.Combine(
             Server.GameDirectory,
