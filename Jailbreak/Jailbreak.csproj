@@ -23,12 +23,6 @@
 		<None Update="lang\**\*.*" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\JailbreakApi\JailbreakApi.csproj"
-                      ReferenceOutputAssembly="true"
-                      Private="false"
-                      ExcludeAssets="runtime" />
-  </ItemGroup>
   <Target Name="CopyYamlDotNet" AfterTargets="Build">
     <ItemGroup>
       <YamlDll Include="$(NuGetPackageRoot)yamldotnet\16.3.0\lib\netstandard2.0\YamlDotNet.dll" />
