@@ -6,6 +6,7 @@ using CounterStrikeSharp.API.Modules.Utils;
 using CSTimer = CounterStrikeSharp.API.Modules.Timers.Timer;
 using static Jailbreak.Jailbreak;
 using CounterStrikeSharp.API.Modules.Timers;
+using Microsoft.Extensions.Logging;
 
 namespace Jailbreak;
 
@@ -175,5 +176,35 @@ public static class Library
             if (pawn != null)
                 pawn.VelocityModifier = 0.0f;
         }
+    }
+    public static void SetAmmo(this CCSPlayerController player, int ammo)
+    {
+        CCSPlayerPawn? pawn = player.PlayerPawn.Value;
+        if (pawn == null)
+            return;
+
+        CBasePlayerWeapon? weapon = pawn.GetActiveWeapon();
+        if (weapon == null)
+            return;
+
+        weapon.Clip1 = ammo;
+    }
+    public static void SetReserve(this CCSPlayerController player, int reserve)
+    {
+        CCSPlayerPawn? pawn = player.PlayerPawn.Value;
+        if (pawn == null)
+            return;
+
+        CBasePlayerWeapon? weapon = pawn.GetActiveWeapon();
+        if (weapon == null)
+            return;
+
+        weapon.ReserveAmmo[0] = reserve;
+        Utilities.SetStateChanged(weapon, "CBasePlayerWeapon", "m_pReserveAmmo");
+    }
+    public static CBasePlayerWeapon? GetActiveWeapon(this CCSPlayerPawn pawn)
+    {
+        CBasePlayerWeapon? weapon = pawn.WeaponServices?.ActiveWeapon.Value;
+        return weapon;
     }
 }
