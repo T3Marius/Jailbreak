@@ -37,5 +37,6 @@
   "day_starting_html": "Special Day <font color='yellow'>{0}</font><br>Starts in <font color='green'>{1}</font> seconds!",
   "no_scope_day<name>": "No Scope",
   "teleport_day<name>": "Teleport Day",
-  "zombie_day<name>": "Zombie Day"
+  "zombie_day<name>": "Zombie Day",
+  "one_in_the_chamber_day<name>": "One In The Chamber"
 }
