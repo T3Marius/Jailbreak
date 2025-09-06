@@ -159,6 +159,9 @@ public class DaysConfig
     public bool ZombieRound { get; set; } = true;
     public ZombieDayConfig ZombieDayConfig { get; set; } = new();
 
+    [YamlMember(Alias = "one_in_the_chamber_round")]
+    public bool OneInTheChamberRound { get; set; } = true;
+
 }
 public class ZombieDayConfig
 {
