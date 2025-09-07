@@ -66,9 +66,11 @@ public class KnifeFightRequest : ILastRequest
 
         }
 
-
-        Prisoner.GiveNamedItem("weapon_" + SelectedWeapon?.ToLower());
-        Guardian.GiveNamedItem("weapon_" + SelectedWeapon?.ToLower());
+        Server.NextFrame(() =>
+        {
+            Prisoner.GiveNamedItem("weapon_" + SelectedWeapon?.ToLower());
+            Guardian.GiveNamedItem("weapon_" + SelectedWeapon?.ToLower());
+        });
 
         VirtualFunctions.CCSPlayer_ItemServices_CanAcquireFunc.Hook(OnCanAcquireFunc, HookMode.Pre);
         VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Hook(OnTakeDamage, HookMode.Pre);
