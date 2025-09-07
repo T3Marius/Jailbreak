@@ -19,7 +19,7 @@ public class Jailbreak : BasePlugin
     public static Jailbreak Instance { get; set; } = new();
     public JailbreakConfig Config => _configManager?.Config ?? new JailbreakConfig();
     public static IT3MenuManager MenuManager = null!;
-    public SpecialDay SpecialDayApi { get; set; } = new SpecialDay();
+    public JailbreakApi Api { get; set; } = new JailbreakApi();
     public override void OnAllPluginsLoaded(bool hotReload)
     {
         if (MenuManager == null)
@@ -29,7 +29,7 @@ public class Jailbreak : BasePlugin
     {
         Instance = this;
 
-        Capabilities.RegisterPluginCapability(IJailbreakApi.Capability, () => SpecialDayApi);
+        Capabilities.RegisterPluginCapability(IJailbreakApi.Capability, () => Api);
 
         _configManager = new ConfigManager(Path.Combine(
             Server.GameDirectory,
@@ -53,9 +53,13 @@ public class Jailbreak : BasePlugin
             SpecialDayManagement.RegisterDay(new ZombieDay());
 
         if (Config.DaysConfig.OneInTheChamberRound)
-            SpecialDayManagement.RegisterDay(new OneInTheChamber());
+            SpecialDayManagement.RegisterDay(new OneInTheChamberDay());
+
+        if (Config.LastRequest.KnifeLastRequest)
+            LastRequestManagement.RegisterRequest(new KnifeFightRequest());
 
         WardenCommands.Register();
+        PrisonerCommands.Register();
         GunsMenuCommands.Register();
     }
     public override void Unload(bool hotReload)

@@ -12,7 +12,7 @@ using static Jailbreak.Jailbreak;
 
 namespace Jailbreak;
 
-public class OneInTheChamber : ISpecialDay
+public class OneInTheChamberDay : ISpecialDay
 {
     public string Name => Instance.Localizer["one_in_the_chamber_day<name>"];
     public string Description => Instance.Localizer["one_in_the_chamber_day<description>"];
@@ -75,9 +75,6 @@ public class OneInTheChamber : ISpecialDay
             hook.SetReturn(AcquireResult.NotAllowedByProhibition);
             return HookResult.Handled;
         }
-
-
-
         return HookResult.Continue;
     }
     private HookResult OnTakeDamage(DynamicHook arg)

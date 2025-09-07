@@ -42,5 +42,19 @@
   "no_scope_day<description>": "▬▬▬▬▬ {yellow}NO SCOPE DAY{default} ▬▬▬▬▬\n>> No one can use scope in this round!\n>> Free For All: {green}True{default}\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬",
   "teleport_day<description>": "▬▬▬▬▬ {yellow}TELEPORT DAY{default} ▬▬▬▬▬\n>> Shooting at someone switches your positions!\n>> Free For All: {green}True{default}\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬",
   "zombie_day<description>": "▬▬▬▬▬ {yellow}ZOMBIE DAY{default} ▬▬▬▬▬\n>> All prisoners are zombies and have {red}{0}{default} health!\n>> Free For All: {red}False{default}\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬",
-  "one_in_the_chamber_day<description>": "▬▬▬▬▬ {yellow}OITC DAY{default} ▬▬▬▬▬\n>> Deagle only has 1 bullet and it's insta kill.\n>> Make a kill with deagle or knife to get bullets!\n>> Free For All: {green}True{default}\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+  "one_in_the_chamber_day<description>": "▬▬▬▬▬ {yellow}OITC DAY{default} ▬▬▬▬▬\n>> Deagle only has 1 bullet and it's insta kill.\n>> Make a kill with deagle or knife to get bullets!\n>> Free For All: {green}True{default}\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬",
+  "last_request_aleardy_active": "Last Request is aleardy active!",
+  "last_request_starting_html": "<font color='yellow'>{0}</font> Last Request starts in<br><font color='green'>{1}</font> seconds<br> With <font color='red'>{2}</font>",
+  "last_request_started": "{yellow}{0} {1}{default} Last Request started!",
+  "last_request_menu<title>": "Last Request",
+  "last_request_guardian_menu<title>": "Select Guardian",
+  "last_request_weapons_menu<title>": "Select Weapon",
+  "last_request_type_menu<title>": "Select Type",
+  "last_request_no_guardians<option>": "<font color='red'>No Guardians Avalible</font>",
+  "last_request_ended": " {green}[JB]{default} {yellow}{0}{default} Last Request ended!\n>> Winner: {green}{1}{default}\n>> Loser: {red}{2}{default}",
+  "knife_fight_last_request<name>": "Knife Fight",
+  "last_request_must_be_prisoner": "You must be the last prisoner in order to use this command!",
+  "cant_use_last_request": "You can't use Last Request right now.",
+  "last_request_no_guardians": "No guardians to use Last Request on."
+
 }

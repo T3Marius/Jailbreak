@@ -6,6 +6,7 @@ using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
 using CounterStrikeSharp.API.Modules.Cvars;
+using Microsoft.Extensions.Logging;
 
 namespace Jailbreak;
 
@@ -35,20 +36,36 @@ public static class Events
     }
     private static HookResult OnTakeDamage(DynamicHook hook)
     {
-        CEntityInstance entity = hook.GetParam<CEntityInstance>(0);
-        CTakeDamageInfo info = hook.GetParam<CTakeDamageInfo>(1);
-
-        var ability = info.Ability.Value;
-        if (ability == null)
+        var victimHandle = hook.GetParam<CBaseEntity>(0);
+        if (victimHandle.DesignerName != "player")
             return HookResult.Continue;
 
-        if (entity.DesignerName != "player")
+        var info = hook.GetParam<CTakeDamageInfo>(1);
+        var attackerHandle = info.Attacker;
+        if (attackerHandle.Value == null || !attackerHandle.IsValid || attackerHandle.Value.DesignerName != "player")
             return HookResult.Continue;
 
-        var attacker = new CCSPlayerController(ability.Handle);
-        var victim = new CCSPlayerController(entity.Handle);
+       
 
-        if (g_IsBoxActive && attacker.Team == victim.Team && victim.Team != CsTeam.Terrorist)
+        var attacker = attackerHandle.Value.As<CCSPlayerPawn>();
+        var attackerController = attacker.OriginalController.Value;
+        if (attackerController == null)
+        {
+            Instance.Logger.LogError("Attacker controller is null");
+            return HookResult.Continue;
+        }
+
+        var victim = victimHandle.As<CCSPlayerPawn>();
+        var victimController = victim.OriginalController.Value;
+        if (victimController == null)
+        {
+            Instance.Logger.LogError("Victim controller is null");
+            return HookResult.Continue;
+        }
+
+        LastRequestManagement.OnTakeDamage(info, attackerController, victimController);
+
+        if (g_IsBoxActive && attacker.TeamNum == victim.TeamNum && victim.TeamNum != (int)CsTeam.Terrorist)
             return HookResult.Handled;
 
         return HookResult.Continue;
@@ -106,7 +123,12 @@ public static class Events
         JBPlayer victim = JBPlayerManagement.GetOrCreate(victimController);
         JBPlayer attacker = JBPlayerManagement.GetOrCreate(attackerController);
 
+        LastRequestManagement.OnPlayerDeath(victimController);
+
         if (SpecialDayManagement.GetActiveDay() != null) // we don't need to do anything while a special day is active
+            return HookResult.Continue;
+
+        if (LastRequestManagement.GetActiveRequest() != null)
             return HookResult.Continue;
 
         if (victim == attacker)
@@ -229,6 +251,9 @@ public static class Events
             return HookResult.Continue;
 
         if (SpecialDayManagement.GetActiveDay() != null)
+            return HookResult.Continue;
+
+        if (LastRequestManagement.GetActiveRequest() != null)
             return HookResult.Continue;
 
 

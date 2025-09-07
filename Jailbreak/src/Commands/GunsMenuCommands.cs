@@ -21,6 +21,9 @@ public static class GunsMenuCommands
         JBPlayer jbPlayer = JBPlayerManagement.GetOrCreate(controller);
         var ActiveDay = SpecialDayManagement.GetActiveDay();
 
+        if (LastRequestManagement.GetActiveRequest() != null)
+            return;
+
         if (jbPlayer.Role != JBRole.Guardian && ActiveDay is not TeleportDay)
         {
             // this check is made so prisoners are only allowed to use guns menu in some special days.

@@ -11,6 +11,11 @@ namespace JailbreakApi
         ISpecialDay? GetActiveDay();
         IReadOnlyList<ISpecialDay> GetAllDays();
         void EndDay();
+
+        void RegisterRequest(ILastRequest day);
+        ILastRequest? GetActiveRequest();
+        IReadOnlyList<ILastRequest> GetAllRequests();
+        void EndRequest();
     }
 
 }

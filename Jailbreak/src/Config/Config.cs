@@ -34,6 +34,9 @@ public class JailbreakConfig
     [YamlMember(Alias = "special_days")]
     public DaysConfig DaysConfig { get; set; } = new();
 
+    [YamlMember(Alias = "last_request_config")]
+    public LastRequestConfig LastRequest { get; set; } = new();
+
     [YamlMember(Alias = "guns_menu_config")]
     public GunsMenuConfig GunsMenu { get; set; } = new();
 
@@ -94,6 +97,9 @@ public class PrisonerConfig
 
     [YamlMember(Alias = "skip_mute_flags")]
     public List<string> SkipMuteFlags { get; set; } = ["@css/generic"];
+
+    [YamlMember(Alias = "prisoner_commands")]
+    public PrisonerCommandsConfig Commands { get; set; } = new();
 
 }
 public class WardenCommandsConfig
@@ -202,6 +208,11 @@ public class Sounds_Config
 
 
 }
+public class PrisonerCommandsConfig
+{
+    public List<string> LastRequest { get; set; } = ["lr", "lastrequest"];
+}
+
 public class GunsMenuConfig
 {
     [YamlMember(Alias = "guns_menu_commands")]
@@ -209,4 +220,9 @@ public class GunsMenuConfig
 
     [YamlMember(Alias = "exclude_weapons")]
     public List<string> ExcludeWeapons { get; set; } = [""];
+}
+public class LastRequestConfig
+{
+    [YamlMember(Alias = "knife_last_request")]
+    public bool KnifeLastRequest { get; set; } = true;
 }

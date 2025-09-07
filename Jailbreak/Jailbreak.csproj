@@ -20,7 +20,7 @@
   </ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\JailbreakApi\JailbreakApi.csproj"/>
+		<ProjectReference Include="..\JailbreakApi\JailbreakApi.csproj" />
 	</ItemGroup>
 
   	<ItemGroup>
