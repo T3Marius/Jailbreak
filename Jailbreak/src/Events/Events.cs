@@ -28,6 +28,7 @@ public static class Events
         Instance.RegisterEventHandler<EventRoundEnd>(OnRoundEnd);
         Instance.RegisterEventHandler<EventPlayerHurt>(OnPlayerHurt);
         Instance.RegisterEventHandler<EventWeaponFire>(OnWeaponFire);
+        Instance.RegisterEventHandler<EventPlayerPing>(OnPlayerPing);
     }
     public static void RegisterListeners()
     {
@@ -285,6 +286,25 @@ public static class Events
             jbPlayer.SetRebel(true);
             Library.PrintToAlertAll(Instance.Localizer["became_rebel", jbPlayer.PlayerName]);
         }
+
+        return HookResult.Continue;
+    }
+    private static HookResult OnPlayerPing(EventPlayerPing @event, GameEventInfo info)
+    {
+        CCSPlayerController? controller = @event.Userid;
+        if (controller == null)
+            return HookResult.Continue;
+
+        JBPlayer jbPlayer = JBPlayerManagement.GetOrCreate(controller);
+
+        if (!jbPlayer.IsWarden)
+            return HookResult.Continue;
+
+        Vector? pos = new Vector(@event.X, @event.Y, @event.Z);
+        if (pos == null)
+            return HookResult.Continue;
+
+        Beams.DrawPingBeacon(pos);
 
         return HookResult.Continue;
     }

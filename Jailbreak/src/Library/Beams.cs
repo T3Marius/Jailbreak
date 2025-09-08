@@ -11,6 +11,7 @@ namespace Jailbreak;
 public static class Beams
 {
     private static readonly Dictionary<CBeam, Timer> PersistentBeams = new();
+    private static List<CBeam> CurrentPingBeams = new List<CBeam>();
 
     private static Vector AngleOnCircle(float angle, float radius, Vector mid)
     {
@@ -32,7 +33,66 @@ public static class Beams
 
         Utilities.SetStateChanged(laser, "CBeam", "m_vecEndPos");
     }
+    public static void DrawPingBeacon(Vector pos)
+    {
+        if (pos == null) return;
 
+        // Remove old beacon if exists
+        if (CurrentPingBeams.Count > 0)
+        {
+            foreach (var beam in CurrentPingBeams)
+            {
+                if (beam != null && beam.IsValid)
+                    beam.Remove();
+            }
+            CurrentPingBeams.Clear();
+        }
+
+        Vector mid = new Vector(pos.X, pos.Y, pos.Z);
+
+        int lines = 32;
+        float step = (float)(2.0f * Math.PI) / lines;
+        float radius = 60.0f;
+
+        float angle_old = 0.0f;
+        float angle_cur = step;
+
+        for (int i = 0; i < lines; i++)
+        {
+            Vector start = AngleOnCircle(angle_old, radius, mid);
+            Vector end = AngleOnCircle(angle_cur, radius, mid);
+
+            var result = DrawLaserBetween(
+                start,
+                end,
+                Color.Blue,
+                60f,
+                4.0f
+            );
+
+            if (result.Item2 != null)
+            {
+                CurrentPingBeams.Add(result.Item2);
+            }
+
+            angle_old = angle_cur;
+            angle_cur += step;
+        }
+
+    }
+
+    public static void ClearPingBeacon()
+    {
+        if (CurrentPingBeams.Count > 0)
+        {
+            foreach (var beam in CurrentPingBeams)
+            {
+                if (beam != null && beam.IsValid)
+                    beam.Remove();
+            }
+            CurrentPingBeams.Clear();
+        }
+    }
     public static void DrawBeaconOnPlayer(CCSPlayerController? player)
     {
         if (player?.Pawn?.Value == null || player.PlayerPawn?.Value == null) return;
