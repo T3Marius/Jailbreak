@@ -13,7 +13,7 @@ public static class JBPlayerManagement
         if (!JBPlayers.TryGetValue(controller.Slot, out JBPlayer? jbPlayer))
         {
             jbPlayer = new JBPlayer(controller, controller.PlayerPawn.Value);
-            JBPlayers[controller.Slot] = jbPlayer; // test comment -delete this later
+            JBPlayers[controller.Slot] = jbPlayer;
 
             jbPlayer.OnPlayerRoleChanged += Events.OnPlayerRoleChanged;
         }
