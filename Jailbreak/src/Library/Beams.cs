@@ -37,7 +37,6 @@ public static class Beams
     {
         if (pos == null) return;
 
-        // Remove old beacon if exists
         if (CurrentPingBeams.Count > 0)
         {
             foreach (var beam in CurrentPingBeams)
@@ -191,7 +190,6 @@ public static class Beams
 
         if (onTick && player1 != null && player2 != null)
         {
-            // Use OnTick style timer to constantly track players
             Timer tickTimer = Instance.AddTimer(0.05f, () =>
             {
                 if (!beam.IsValid || !player1.IsValid || !player2.IsValid)
@@ -215,7 +213,6 @@ public static class Beams
         }
         else
         {
-            // Normal life timer
             Instance.AddTimer(life, () =>
             {
                 if (beam?.IsValid == true)

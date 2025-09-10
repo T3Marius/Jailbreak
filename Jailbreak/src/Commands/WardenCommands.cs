@@ -1,7 +1,9 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Commands;
+using CounterStrikeSharp.API.Modules.Entities;
 using CounterStrikeSharp.API.Modules.Utils;
+using System.Drawing;
 using static Jailbreak.Jailbreak;
 
 namespace Jailbreak;
@@ -29,6 +31,10 @@ public static class WardenCommands
         foreach (var cmd in Instance.Config.Warden.Commands.ToggleBox)
         {
             Instance.AddCommand($"css_{cmd}", "Toggles box", Command_ToggleBox);
+        }
+        foreach (var cmd in Instance.Config.Warden.Commands.ColorPrisoner)
+        {
+            Instance.AddCommand($"css_{cmd}", "Color a prisoner", Command_Color);
         }
     }
     private static void Command_TakeWarden(CCSPlayerController? controller, CommandInfo info)
@@ -179,5 +185,45 @@ public static class WardenCommands
             Library.StartBox(jbPlayer.PlayerName);
         else
             Library.StopBox(jbPlayer.PlayerName);
+    }
+    private static void Command_Color(CCSPlayerController? controller, CommandInfo info)
+    {
+        if (controller == null)
+            return;
+
+        JBPlayer jbPlayer = JBPlayerManagement.GetOrCreate(controller);
+
+        if (info.ArgCount <= 1)
+        {
+            // open color menu (in future though)
+            return;
+        }
+
+        if (!jbPlayer.IsWarden)
+        {
+            info.ReplyToCommand(Instance.Localizer["prefix"] + Instance.Localizer["you_are_not_warden"]);
+            return;
+        }
+        Color color = Color.Transparent;
+        string targetName = info.ArgByIndex(1);
+
+        string colorName = info.ArgByIndex(2);
+        if (colorName.Equals("default"))
+        {
+            color = Color.FromArgb(255, 255, 255, 255);
+        }
+        else
+            color = Color.FromName(colorName);
+
+        foreach (var target in Utilities.GetPlayers().Where(p => p.PlayerName == targetName && p.Team == CsTeam.Terrorist))
+        {
+            JBPlayer targetJbPlayer = JBPlayerManagement.GetOrCreate(target);
+            if (targetJbPlayer.Role == JBRole.Guardian)
+                return;
+
+            targetJbPlayer.SetColor(color);
+            target.PrintToChat(Instance.Localizer["prefix"] + Instance.Localizer["prisoner_colored", jbPlayer.PlayerName, target.PlayerName]);
+        }
+
     }
 }

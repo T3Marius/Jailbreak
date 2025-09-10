@@ -124,6 +124,9 @@ public class WardenCommandsConfig
 
     [YamlMember(Alias = "toggle_box")]
     public List<string> ToggleBox { get; set; } = ["box"];
+
+    [YamlMember(Alias = "color_prisoner")]
+    public List<string> ColorPrisoner { get; set; } = ["color"];
 }
 public class ModelsConfig
 {

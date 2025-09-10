@@ -29,7 +29,8 @@ public class KnifeFightRequest : ILastRequest
     (ushort)ItemDefinition.HUNTSMAN_KNIFE, (ushort)ItemDefinition.PARACORD_KNIFE, (ushort)ItemDefinition.SKELETON_KNIFE, (ushort)ItemDefinition.STILETTO_KNIFE,
     (ushort)ItemDefinition.SURVIVAL_KNIFE, (ushort)ItemDefinition.BUTTERFLY_KNIFE];
 
-    public bool IsPrepTimerActive { get; set; }
+    public bool IsPrepTimerActive { get; set; } // this is a global bool, it's true everytime the prep timer is active
+
     public bool IsOneShotEnable = false;
 
     public void Start()
