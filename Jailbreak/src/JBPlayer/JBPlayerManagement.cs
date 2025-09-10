@@ -32,6 +32,18 @@ public static class JBPlayerManagement
     {
         return JBPlayers.Values.Where(p => p.IsFreeday && p.IsValid).ToList();
     }
+    public static List<JBPlayer> GetAllPrisoners(bool excludeRebels = true, bool exlcudeFreedays = true)
+    {
+        return JBPlayers.Values.Where(p => p.IsValid && p.Role == JBRole.Prisoner && excludeRebels ? !p.IsRebel : p.IsRebel && exlcudeFreedays ? !p.IsFreeday : p.IsFreeday).ToList();
+    }
+    public static List<JBPlayer> GetAllGuardians()
+    {
+        return JBPlayers.Values.Where(p => p.IsValid && p.Role == JBRole.Guardian).ToList();
+    }
+    public static List<JBPlayer> GetAllPlayers()
+    {
+        return JBPlayers.Values.Where(p => p.IsValid).ToList();
+    }
     public static void Remove(CCSPlayerController controller)
     {
         if (JBPlayers.TryGetValue(controller.Slot, out JBPlayer? jbPlayer))
