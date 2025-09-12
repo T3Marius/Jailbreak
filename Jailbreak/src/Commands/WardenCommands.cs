@@ -1,6 +1,7 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Commands;
+using CounterStrikeSharp.API.Modules.Commands.Targeting;
 using CounterStrikeSharp.API.Modules.Entities;
 using CounterStrikeSharp.API.Modules.Utils;
 using System.Drawing;
@@ -195,7 +196,7 @@ public static class WardenCommands
 
         if (info.ArgCount <= 1)
         {
-            // open color menu (in future though)
+            // TODO: open color menu (in future)
             return;
         }
 
@@ -204,26 +205,41 @@ public static class WardenCommands
             info.ReplyToCommand(Instance.Localizer["prefix"] + Instance.Localizer["you_are_not_warden"]);
             return;
         }
-        Color color = Color.Transparent;
-        string targetName = info.ArgByIndex(1);
 
+        string targetName = info.ArgByIndex(1);
         string colorName = info.ArgByIndex(2);
-        if (colorName.Equals("default"))
+
+        Color color;
+        if (colorName.Equals("default", StringComparison.OrdinalIgnoreCase))
         {
             color = Color.FromArgb(255, 255, 255, 255);
         }
         else
-            color = Color.FromName(colorName);
-
-        foreach (var target in Utilities.GetPlayers().Where(p => p.PlayerName == targetName && p.Team == CsTeam.Terrorist))
         {
-            JBPlayer targetJbPlayer = JBPlayerManagement.GetOrCreate(target);
-            if (targetJbPlayer.Role == JBRole.Guardian)
+            try
+            {
+                color = Color.FromName(colorName);
+            }
+            catch
+            {
+                info.ReplyToCommand(Instance.Localizer["prefix"] + Instance.Localizer["invalid_color", colorName]);
                 return;
-
-            targetJbPlayer.SetColor(color);
-            target.PrintToChat(Instance.Localizer["prefix"] + Instance.Localizer["prisoner_colored", jbPlayer.PlayerName, target.PlayerName]);
+            }
         }
 
+        foreach (var target in Utilities.GetPlayers()
+                     .Where(p => p.PlayerName == targetName && p.Team == CsTeam.Terrorist))
+        {
+            JBPlayer targetJbPlayer = JBPlayerManagement.GetOrCreate(target);
+
+            if (targetJbPlayer.Role == JBRole.Guardian)
+                continue;
+
+            targetJbPlayer.SetColor(color);
+        }
+
+        Server.PrintToChatAll(Instance.Localizer["prefix"] + Instance.Localizer["prisoner_colored", targetName, colorName]
+        );
     }
+
 }
