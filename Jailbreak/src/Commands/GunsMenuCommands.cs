@@ -1,5 +1,6 @@
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Commands;
+using CounterStrikeSharp.API.Modules.Utils;
 using static Jailbreak.Jailbreak;
 
 namespace Jailbreak;
@@ -19,19 +20,28 @@ public static class GunsMenuCommands
             return;
 
         JBPlayer jbPlayer = JBPlayerManagement.GetOrCreate(controller);
-        var ActiveDay = SpecialDayManagement.GetActiveDay();
+        var activeDay = SpecialDayManagement.GetActiveDay();
 
         if (LastRequestManagement.GetActiveRequest() != null)
             return;
 
-        if (jbPlayer.Role != JBRole.Guardian && ActiveDay is not TeleportDay)
-        {
-            // this check is made so prisoners are only allowed to use guns menu in some special days.
+        bool isTeleportDay = activeDay is TeleportDay;
 
-            info.ReplyToCommand(Instance.Localizer["prefix"] + Instance.Localizer["no_acces"]);
+        if (controller.Team == CsTeam.Terrorist)
+        {
+            if (jbPlayer.Role != JBRole.Guardian && !isTeleportDay)
+            {
+                info.ReplyToCommand(Instance.Localizer["prefix"] + Instance.Localizer["no_acces"]);
+                return;
+            }
+        }
+        if (jbPlayer.Role == JBRole.Guardian || jbPlayer.IsWarden)
+        {
+            GunsMenu.Display(jbPlayer);
             return;
         }
 
-        GunsMenu.Display(jbPlayer);
+        info.ReplyToCommand(Instance.Localizer["prefix"] + Instance.Localizer["no_acces"]);
     }
+
 }
