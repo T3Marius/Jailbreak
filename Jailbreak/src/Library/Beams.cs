@@ -11,6 +11,7 @@ namespace Jailbreak;
 public static class Beams
 {
     private static readonly Dictionary<CBeam, Timer> PersistentBeams = new();
+    private static readonly Dictionary<CCSPlayerController, CBeam> ActiveLasers = new();
     private static List<CBeam> CurrentPingBeams = new List<CBeam>();
 
     private static Vector AngleOnCircle(float angle, float radius, Vector mid)
@@ -21,7 +22,20 @@ public static class Beams
             mid.Z + 6.0f
         );
     }
+    public static void UpdateWardenLaser(JBPlayer warden, PlayerButtons button)
+    {
+        if (!warden.IsWarden)
+            return;
 
+        if (button.HasFlag(PlayerButtons.Use))
+        {
+            DrawOrUpdateLaser(warden);
+        }
+        else
+        {
+            RemoveLaserPointer(warden);
+        }
+    }
     public static void TeleportLaser(CBeam? laser, Vector start, Vector end)
     {
         if (laser == null || !laser.IsValid) return;
@@ -222,7 +236,43 @@ public static class Beams
 
         return ((int)beam.Index, beam);
     }
+    private static void DrawOrUpdateLaser(JBPlayer warden)
+    {
+        CCSPlayerPawn? pawn = warden.PlayerPawn;
+        if (pawn == null)
+            return;
 
+        Vector eyePos = pawn.GetEyePosition();
+        QAngle eyeAngles = pawn.EyeAngles;
+        Vector forward = Library.GetForwardVector(eyeAngles);
+
+        Vector endPos = new Vector(
+            eyePos.X + forward.X * 1000,
+            eyePos.Y + forward.Y * 1000,
+            eyePos.Z + forward.Z * 1000
+        );
+
+        if (!ActiveLasers.TryGetValue(warden.Controller, out CBeam? beam) || beam == null || !beam.IsValid)
+        {
+            var result = DrawLaserBetween(eyePos, endPos, Color.Blue, 0.1f, 2.0f, true, warden.Controller, null);
+            if (result.Item2 != null)
+                ActiveLasers[warden.Controller] = result.Item2;
+        }
+        else
+        {
+            TeleportLaser(beam, eyePos, endPos);
+        }
+    }
+    private static void RemoveLaserPointer(JBPlayer warden)
+    {
+        if (ActiveLasers.TryGetValue(warden.Controller, out CBeam? beam))
+        {
+            if (beam != null && beam.IsValid)
+                beam.Remove();
+
+            ActiveLasers.Remove(warden.Controller);
+        }
+    }
     public static void StopPersistentBeam(CBeam beam)
     {
         if (PersistentBeams.TryGetValue(beam, out Timer? timer))

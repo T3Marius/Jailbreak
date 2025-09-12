@@ -55,6 +55,7 @@
   "knife_fight_last_request<name>": "Knife Fight",
   "last_request_must_be_prisoner": "You must be the last prisoner in order to use this command!",
   "cant_use_last_request": "You can't use Last Request right now.",
-  "last_request_no_guardians": "No guardians to use Last Request on."
+  "last_request_no_guardians": "No guardians to use Last Request on.",
+  "prisoner_colored": "{blue}Warden{default} set {orange}{0}{default} color to {1}{default}."
 
 }

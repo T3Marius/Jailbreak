@@ -219,4 +219,23 @@ public static class Library
         CBasePlayerWeapon? weapon = pawn.WeaponServices?.ActiveWeapon.Value;
         return weapon;
     }
+    public static Vector GetEyePosition(this CCSPlayerPawn pawn)
+    {
+        if (pawn == null)
+            return new Vector(0, 0, 0);
+
+        var origin = pawn.AbsOrigin ?? new Vector(0, 0, 0);
+        return new Vector(origin.X, origin.Y, origin.Z + 64.0f);
+    }
+    public static Vector GetForwardVector(QAngle angles)
+    {
+        double pitch = angles.X * Math.PI / 180.0;
+        double yaw = angles.Y * Math.PI / 180.0;
+
+        float x = (float)(Math.Cos(pitch) * Math.Cos(yaw));
+        float y = (float)(Math.Cos(pitch) * Math.Sin(yaw));
+        float z = (float)(-Math.Sin(pitch));
+
+        return new Vector(x, y, z);
+    }
 }

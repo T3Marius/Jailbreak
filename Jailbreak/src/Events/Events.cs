@@ -337,6 +337,12 @@ public static class Events
         }
 
         Library.UpdateFrozenPlayers();
+        List<JBPlayer> jbPlayers = JBPlayerManagement.GetAllPlayers();
+        foreach (var warden in jbPlayers.Where(j => j.IsWarden))
+        {
+            Beams.UpdateWardenLaser(warden, warden.Controller.Buttons);
+        }
+
     }
     public static void OnPlayerRoleChanged(JBPlayer jbPlayer, JBRole role)
     {
