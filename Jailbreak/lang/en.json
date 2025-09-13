@@ -53,8 +53,10 @@
   "last_request_no_guardians<option>": "<font color='red'>No Guardians Avalible</font>",
   "last_request_ended": " {green}[JB]{default} {yellow}{0}{default} Last Request ended!\n>> Winner: {green}{1}{default}\n>> Loser: {red}{2}{default}",
   "knife_fight_last_request<name>": "Knife Fight",
+  "only_headshot_fight_last_request<name>": "Only Headshot",
   "last_request_must_be_prisoner": "You must be the last prisoner in order to use this command!",
   "cant_use_last_request": "You can't use Last Request right now.",
+  "cant_use_last_request_as_rebel": "You can't use last request as a rebel. Use !s to surrended yourself.'",
   "last_request_no_guardians": "No guardians to use Last Request on.",
   "prisoner_colored": "{blue}Warden{default} set {orange}{0}{default} color to {1}{default}."
 
