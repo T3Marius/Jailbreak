@@ -234,6 +234,7 @@ public static class Events
     private static HookResult OnRoundEnd(EventRoundEnd @event, GameEventInfo info)
     {
         SpecialDayManagement.OnRoundEnd();
+        LastRequestManagement.EndRequest(null, null);
 
         return HookResult.Continue;
     }
@@ -279,6 +280,12 @@ public static class Events
 
         if (SpecialDayManagement.GetActiveDay() != null)
             return HookResult.Continue; // ignore when special day is active
+
+        if (LastRequestManagement.GetActiveRequest() != null)
+            return HookResult.Continue;
+
+        if (@event.Weapon.Contains("knife")) // ignore when he fires knife.
+            return HookResult.Continue;
 
         if (jbPlayer.Role == JBRole.Prisoner && !jbPlayer.IsRebel) // only set rebel if he's prisoner and is not aleardy rebel.
         {
@@ -357,6 +364,7 @@ public static class Events
         Instance.DeregisterEventHandler<EventPlayerDisconnect>(OnPlayerDisconnect);
         Instance.DeregisterEventHandler<EventPlayerDeath>(OnPlayerDeath);
         Instance.DeregisterEventHandler<EventRoundStart>(OnRoundStart);
+        Instance.DeregisterEventHandler<EventRoundEnd>(OnRoundEnd);
         Instance.DeregisterEventHandler<EventPlayerHurt>(OnPlayerHurt);
         Instance.DeregisterEventHandler<EventWeaponFire>(OnWeaponFire);
 
