@@ -228,4 +228,7 @@ public class LastRequestConfig
 {
     [YamlMember(Alias = "knife_last_request")]
     public bool KnifeLastRequest { get; set; } = true;
+
+    [YamlMember(Alias = "only_headshot_last_request")]
+    public bool HeadshotOnlyLastRequest { get; set; } = true;
 }
