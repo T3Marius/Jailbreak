@@ -41,6 +41,11 @@ public static class PrisonerCommands
         }
 
         JBPlayer jbPlayer = JBPlayerManagement.GetOrCreate(player);
+        if (jbPlayer.IsRebel)
+        {
+            info.ReplyToCommand(Instance.Localizer["prefix"] + Instance.Localizer["cant_use_last_request_as_rebel"]);
+            return;
+        }
 
         LastRequestMenu.Display(jbPlayer);
     }

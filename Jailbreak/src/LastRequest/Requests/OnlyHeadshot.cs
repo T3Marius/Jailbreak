@@ -5,13 +5,14 @@ using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
 using CounterStrikeSharp.API.Modules.Utils;
 using JailbreakApi;
+using Microsoft.Extensions.Logging;
 using static Jailbreak.Jailbreak;
 
 namespace Jailbreak;
 
-public class KnifeFightRequest : ILastRequest
+public class OnlyHeadshot : ILastRequest
 {
-    public string Name => Instance.Localizer["knife_fight_last_request<name>"];
+    public string Name => Instance.Localizer["only_headshot_fight_last_request<name>"];
     public string Description => string.Empty;
 
     public CCSPlayerController? Prisoner { get; set; }
@@ -19,25 +20,25 @@ public class KnifeFightRequest : ILastRequest
 
     public string SelectedWeaponName { get; set; } = string.Empty;
     public string SelectedWeaponID { get; set; } = string.Empty;
+    const int DMG_HEADSHOT = 1 << 23;
 
     public IReadOnlyList<(string DisplayName, string ClassName)> GetAvailableWeapons() =>
         new List<(string, string)>
         {
-            ("Knife", "weapon_knife"),
+            ("Deagle", "weapon_deagle"),
+            ("AK-47", "weapon_ak47"),
+            ("Glock-18", "weapon_glock"),
+            ("Five-SeveN", "weapon_fiveseven"),
+            ("USP-S", "weapon_usp_silencer")
         };
 
     public string? SelectedType { get; set; } = string.Empty;
-    public IReadOnlyList<string> GetAvalibleTypes() => new List<string> { "Normal", "Gravity", "Speed", "OneShot" };
+    public IReadOnlyList<string> GetAvalibleTypes() => new List<string> { };
 
-    public List<ushort> AllowedKnifesDefIndex = [(ushort)ItemDefinition.KNIFE_T, (ushort)ItemDefinition.KNIFE_CT, (ushort)ItemDefinition.KARAMBIT, (ushort)ItemDefinition.GUT_KNIFE,
-    (ushort)ItemDefinition.FLIP_KNIFE, (ushort)ItemDefinition.BOWIE_KNIFE, (ushort)ItemDefinition.NOMAD_KNIFE, (ushort)ItemDefinition.TALON_KNIFE,
-    (ushort)ItemDefinition.URSUS_KNIFE, (ushort)ItemDefinition.NAVAJA_KNIFE, (ushort)ItemDefinition.CLASSIC_KNIFE, (ushort)ItemDefinition.FALCHION_KNIFE,
-    (ushort)ItemDefinition.HUNTSMAN_KNIFE, (ushort)ItemDefinition.PARACORD_KNIFE, (ushort)ItemDefinition.SKELETON_KNIFE, (ushort)ItemDefinition.STILETTO_KNIFE,
-    (ushort)ItemDefinition.SURVIVAL_KNIFE, (ushort)ItemDefinition.BUTTERFLY_KNIFE];
+    public List<ushort> AllowedWeaponsDefIndex = [(ushort)ItemDefinition.AK_47, (ushort)ItemDefinition.DESERT_EAGLE , (ushort)ItemDefinition.GLOCK_18,
+    (ushort)ItemDefinition.FIVE_SEVEN, (ushort)ItemDefinition.USP_S];
 
     public bool IsPrepTimerActive { get; set; } // this is a global bool, it's true everytime the prep timer is active
-
-    public bool IsOneShotEnable = false;
 
     public void Start()
     {
@@ -50,33 +51,10 @@ public class KnifeFightRequest : ILastRequest
         Prisoner.SetHealth(100);
         Guardian.SetHealth(100);
 
-        switch (SelectedType?.ToLower())
-        {
-            case "normal":
-                IsOneShotEnable = false;
-                break;
-            case "gravity":
-                IsOneShotEnable = false;
-
-                Prisoner.SetGravity(0.3f);
-                Guardian.SetGravity(0.3f);
-                break;
-            case "speed":
-                IsOneShotEnable = false;
-
-                Prisoner.SetSpeed(2.5f);
-                Guardian.SetSpeed(2.5f);
-                break;
-            case "oneshot":
-                IsOneShotEnable = true;
-                break;
-
-        }
-
         Server.NextFrame(() =>
         {
-            Prisoner.GiveNamedItem(CsItem.KnifeT);
-            Guardian.GiveNamedItem(CsItem.KnifeT);
+            Prisoner.GiveNamedItem(SelectedWeaponID);
+            Guardian.GiveNamedItem(SelectedWeaponID);
         });
 
         VirtualFunctions.CCSPlayer_ItemServices_CanAcquireFunc.Hook(OnCanAcquireFunc, HookMode.Pre);
@@ -87,7 +65,7 @@ public class KnifeFightRequest : ILastRequest
         var econItem = hook.GetParam<CEconItemView>(1);
         ushort defIndex = (ushort)econItem.ItemDefinitionIndex;
 
-        if (!AllowedKnifesDefIndex.Contains(defIndex))
+        if (!AllowedWeaponsDefIndex.Contains(defIndex))
         {
             hook.SetReturn(AcquireResult.NotAllowedByProhibition);
             return HookResult.Handled;
@@ -116,11 +94,13 @@ public class KnifeFightRequest : ILastRequest
             return HookResult.Handled;
         }
 
-        if (IsOneShotEnable)
+        var hitGroupInfoId = info.GetHitGroup();
+        if (hitGroupInfoId != HitGroup_t.HITGROUP_HEAD)
         {
-            info.Damage = 1000;
-            return HookResult.Changed;
+            info.Damage = 0;
+            return HookResult.Handled;
         }
+
 
         return HookResult.Continue;
     }
@@ -132,16 +112,8 @@ public class KnifeFightRequest : ILastRequest
         string winnerName = winner?.PlayerName ?? "None";
         string loserName = loser?.PlayerName ?? "None";
 
+        Server.NextFrame(() => Prisoner?.RemoveWeapons());
+
         Library.PrintToChatAll(Instance.Localizer["last_request_ended", Name, winnerName, loserName]);
-
-        if (Prisoner == null || Guardian == null)
-            return;
-
-        Server.NextFrame(() => Prisoner.RemoveWeapons());
-
-        Prisoner.SetSpeed(1.0f);
-        Guardian.SetSpeed(1.0f);
-        Prisoner.SetGravity(1.0f);
-        Guardian.SetGravity(1.0f);
     }
 }

@@ -80,17 +80,20 @@ public static class LastRequestMenu
         menu.IsSubMenu = true;
         menu.ParentMenu = parentMenu;
 
-        IReadOnlyList<string> avalibleWeapons = request.GetAvalibleWeapons();
+        IReadOnlyList<(string DisplayName, string ClassName)> availableWeapons = request.GetAvailableWeapons();
 
-        foreach (var weapon in avalibleWeapons)
+        foreach (var (displayName, className) in availableWeapons)
         {
-            menu.AddOption(weapon, (p, o) =>
+            menu.AddOption(displayName, (p, o) =>
             {
-                request.SelectedWeapon =  weapon;
-                LastRequestManagement.SelectRequest(request, jbPrisoner.Controller, jbGuardian.Controller, weapon);
+                request.SelectedWeaponName = displayName;
+                request.SelectedWeaponID = className;
+
+                LastRequestManagement.SelectRequest(request, jbPrisoner.Controller, jbGuardian.Controller, displayName, className);
                 menu.Close(p);
             });
         }
+
 
         MenuManager.OpenSubMenu(jbPrisoner.Controller, menu);
     }

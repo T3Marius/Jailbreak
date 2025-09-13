@@ -58,6 +58,9 @@ public class Jailbreak : BasePlugin
         if (Config.LastRequest.KnifeLastRequest)
             LastRequestManagement.RegisterRequest(new KnifeFightRequest());
 
+        if (Config.LastRequest.HeadshotOnlyLastRequest)
+            LastRequestManagement.RegisterRequest(new OnlyHeadshot());
+
         WardenCommands.Register();
         PrisonerCommands.Register();
         GunsMenuCommands.Register();

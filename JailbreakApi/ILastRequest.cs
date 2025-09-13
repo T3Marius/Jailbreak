@@ -10,13 +10,12 @@ namespace JailbreakApi
         CCSPlayerController? Prisoner { get; set; }
         CCSPlayerController? Guardian { get; set; }
 
-        string? SelectedWeapon { get; set; }
-        IReadOnlyList<string> GetAvalibleWeapons();
+        string SelectedWeaponID { get; set; }
+        string SelectedWeaponName { get; set; }
+        public IReadOnlyList<(string DisplayName, string ClassName)> GetAvailableWeapons();
 
         string? SelectedType { get; set; }
         IReadOnlyList<string> GetAvalibleTypes();
-        
-
 
         bool IsPrepTimerActive { get; set; }
 

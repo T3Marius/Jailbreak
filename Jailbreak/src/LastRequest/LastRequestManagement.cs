@@ -24,7 +24,7 @@ public static class LastRequestManagement
         Requests.Add(request);
     }
 
-    public static void SelectRequest(ILastRequest request, CCSPlayerController prisoner, CCSPlayerController guardian, string weapon)
+    public static void SelectRequest(ILastRequest request, CCSPlayerController prisoner, CCSPlayerController guardian, string weaponName, string weaponId)
     {
         if (ActiveRequest != null)
         {
@@ -35,7 +35,8 @@ public static class LastRequestManagement
         ActiveRequest = request;
         ActiveRequest.Prisoner = prisoner;
         ActiveRequest.Guardian = guardian;
-        ActiveRequest.SelectedWeapon = weapon;
+        ActiveRequest.SelectedWeaponName = weaponName;
+        ActiveRequest.SelectedWeaponID = weaponId;
 
         int prepDelay = 8;
 
