@@ -109,7 +109,6 @@ public static class WardenMenu
         menu.IsSubMenu = true;
         menu.ParentMenu = parentMenu;
 
-
         foreach (var prisonerController in validPlayers)
         {
             JBPlayer prisonerJb = JBPlayerManagement.GetOrCreate(prisonerController);
@@ -162,5 +161,30 @@ public static class WardenMenu
         }
 
         MenuManager.OpenSubMenu(jbPlayer.Controller, menu);
+    }
+    public static void OpenSurrenderRequestMenu(JBPlayer warden, JBPlayer rebel)
+    {
+        IT3Menu menu = MenuManager.CreateMenu(Instance.Localizer["surrender_request_menu<title>", rebel.PlayerName]);
+        menu.FreezePlayer = false;
+        menu.IsExitable = false;
+
+        menu.AddOption(Instance.Localizer.ForPlayer(warden.Controller, Instance.Localizer["surrender_request_option<yes>"]), (p, o) =>
+        {
+            rebel.SetRebel(false);
+            Server.NextFrame(() =>
+            {
+                rebel.Controller.RemoveWeapons(); // remove rebel weapons, as he surrended.
+                Server.PrintToChatAll(Instance.Localizer["prefix"] + Instance.Localizer["rebel_surrended", rebel.PlayerName]);
+            });
+
+            menu.Close(p);
+        });
+        menu.AddOption(Instance.Localizer.ForPlayer(warden.Controller, Instance.Localizer["surrender_request_option<no>"]), (p, o) =>
+        {
+            rebel.Print("chat", Instance.Localizer["prefix"] + Instance.Localizer["surrender_declined", rebel.PlayerName]);
+            menu.Close(p);
+        });
+
+        MenuManager.OpenMainMenu(warden.Controller, menu);
     }
 }

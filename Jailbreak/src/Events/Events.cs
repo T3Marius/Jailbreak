@@ -216,6 +216,8 @@ public static class Events
         ConVar.Find("mp_teammates_are_enemies")?.SetValue(false);
 
         SpecialDayManagement.OnRoundStart();
+        PrisonerCommands.SurrenderTries.Clear();
+        LastRequestManagement.EndRequest(null, null);
 
         if (SpecialDayManagement.GetActiveDay() != null)
             return HookResult.Continue;

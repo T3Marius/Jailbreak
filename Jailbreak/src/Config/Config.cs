@@ -213,7 +213,11 @@ public class Sounds_Config
 }
 public class PrisonerCommandsConfig
 {
+    [YamlMember(Alias = "last_request")]
     public List<string> LastRequest { get; set; } = ["lr", "lastrequest"];
+
+    [YamlMember(Alias = "last_request")]
+    public List<string> Surrender { get; set; } = ["s", "surrender"];
 }
 
 public class GunsMenuConfig

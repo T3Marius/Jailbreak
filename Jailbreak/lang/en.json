@@ -22,6 +22,9 @@
   "remove_freeday_menu<title>": "Remove Freeday",
   "guns_menu<title>": "Select Rifle",
   "guns_menu_pistol<title>": "Select Pistol",
+  "surrender_request_menu<title>": "Accept {0} surrender request?",
+  "surrender_request_option<no>": "No",
+  "surrender_request_option<yes>": "Yes",
   "toggle_cells<option>": "Toggle Cells",
   "toggle_box<option>": "Toggle Box",
   "give_freeday<option>": "Give Freeday",
@@ -58,6 +61,12 @@
   "cant_use_last_request": "You can't use Last Request right now.",
   "cant_use_last_request_as_rebel": "You can't use last request as a rebel. Use !s to surrended yourself.'",
   "last_request_no_guardians": "No guardians to use Last Request on.",
-  "prisoner_colored": "{blue}Warden{default} set {orange}{0}{default} color to {1}{default}."
+  "prisoner_colored": "{blue}Warden{default} set {orange}{0}{default} color to {1}{default}.",
+  "not_rebel": "You must be rebel in order to surrender!",
+  "no_warden_to_surrender": "There's no active {blue}Warden{default} to accept your surrender request!",
+  "surrender_sent": "A surrender request was send to the {blue}Warden{default}. You will be notified if he {green}accepts{default} it or {red}not{default}.",
+  "rebel_surrended": "Rebel {red}{0}{default} surrended! All his weapons was removed.",
+  "surrender_declined": "{blue}Warden{default} declined your surrender request! You don't have anymore tries this round.",
+  "surrender_max_tries_attempt": "You can only surrender once per round!"
 
 }
