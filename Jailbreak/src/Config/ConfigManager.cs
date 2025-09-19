@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using System.Reflection;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -20,16 +21,16 @@ public class ConfigManager : IDisposable
     public event Action<JailbreakConfig>? ConfigChanged;
     public event Action<Exception>? ConfigError;
 
-    public JailbreakConfig Config => _config;
+    public JailbreakConfig Config => _config ?? new JailbreakConfig();
     public bool IsWatching => !_disposed && _watcher.EnableRaisingEvents;
-    public ILogger _logger = null!;
+    private readonly ILogger _logger;
 
     public ConfigManager(string filePath, ILogger logger)
     {
         _filePath = Path.GetFullPath(filePath);
-        _config = new JailbreakConfig();
-        _semaphore = new SemaphoreSlim(1, 1);
         _logger = logger;
+        _config = new JailbreakConfig(); // always initialized
+        _semaphore = new SemaphoreSlim(1, 1);
 
         var directory = Path.GetDirectoryName(_filePath);
         if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
@@ -63,6 +64,48 @@ public class ConfigManager : IDisposable
         _debounceTimer = new Timer(OnDebounceTimerElapsed, null, Timeout.Infinite, Timeout.Infinite);
     }
 
+    public T GetConfigValue<T>(string key, T defaultValue = default!)
+    {
+        try
+        {
+            var parts = key.Split('.', StringSplitOptions.RemoveEmptyEntries);
+            object? current = _config;
+
+            foreach (var part in parts)
+            {
+                if (current == null)
+                    return defaultValue;
+
+                var type = current.GetType();
+                var prop = type.GetProperty(
+                    part,
+                    BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance
+                );
+
+                if (prop == null)
+                    return defaultValue;
+
+                current = prop.GetValue(current);
+            }
+
+            if (current == null)
+                return defaultValue;
+
+            if (current is T tValue)
+                return tValue;
+
+            if (current is IConvertible)
+                return (T)Convert.ChangeType(current, typeof(T));
+
+            return defaultValue;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"[Config] Failed to resolve key '{key}'");
+            return defaultValue;
+        }
+    }
+
     public async Task LoadAsync()
     {
         await _semaphore.WaitAsync();
@@ -76,12 +119,7 @@ public class ConfigManager : IDisposable
             }
 
             var yaml = await File.ReadAllTextAsync(_filePath);
-            var loadedConfig = _deserializer.Deserialize<JailbreakConfig>(yaml);
-
-            if (loadedConfig == null)
-            {
-                loadedConfig = new JailbreakConfig();
-            }
+            var loadedConfig = _deserializer.Deserialize<JailbreakConfig>(yaml) ?? new JailbreakConfig();
 
             _config = MergeWithDefaults(loadedConfig);
 
@@ -156,6 +194,7 @@ public class ConfigManager : IDisposable
             Models = MergeModelsConfig(loaded.Models, defaults.Models)
         };
     }
+
     private ModelsConfig MergeModelsConfig(ModelsConfig loaded, ModelsConfig defaults)
     {
         return new ModelsConfig
@@ -165,6 +204,7 @@ public class ConfigManager : IDisposable
             PrisonerModel = loaded.PrisonerModel ?? defaults.PrisonerModel
         };
     }
+
     private DatabaseConfig MergeDatabaseConfig(DatabaseConfig loaded, DatabaseConfig defaults)
     {
         return new DatabaseConfig
@@ -225,7 +265,6 @@ public class ConfigManager : IDisposable
             if (!IsFileReady(_filePath)) return;
 
             await LoadAsync();
-
             ConfigChanged?.Invoke(_config);
         }
         catch (Exception ex)
@@ -246,17 +285,16 @@ public class ConfigManager : IDisposable
             return false;
         }
     }
+
     public void Initialize()
     {
         try
         {
-
             ConfigChanged += OnConfigChanged;
             ConfigError += OnConfigError;
-            Task.Run(async () =>
-            {
-                await LoadAsync();
-            });
+
+            // Load synchronously first (so API has valid config immediately)
+            LoadAsync().GetAwaiter().GetResult();
 
             StartWatching();
         }
@@ -275,6 +313,7 @@ public class ConfigManager : IDisposable
     {
         _logger?.LogError($"Configuration error: {ex.Message}");
     }
+
     public void Dispose()
     {
         if (_disposed) return;

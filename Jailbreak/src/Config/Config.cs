@@ -216,7 +216,7 @@ public class PrisonerCommandsConfig
     [YamlMember(Alias = "last_request")]
     public List<string> LastRequest { get; set; } = ["lr", "lastrequest"];
 
-    [YamlMember(Alias = "last_request")]
+    [YamlMember(Alias = "surrender")]
     public List<string> Surrender { get; set; } = ["s", "surrender"];
 }
 
