@@ -17,7 +17,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\JailbreakApi\JailbreakApi.csproj" />
+		<Reference Include="JailbreakApi">
+			<HintPath>..\..\ExternalAPI\JailbreakAPI.dll</HintPath>
+		</Reference>
 	</ItemGroup>
 
 </Project>

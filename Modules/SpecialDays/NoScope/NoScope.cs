@@ -14,7 +14,7 @@ namespace SpecialDays;
 public class No_Scope : BasePlugin
 {
     public override string ModuleAuthor => "T3Marius";
-    public override string ModuleName => "[SD] Knife Fight";
+    public override string ModuleName => "[SD] No Scope";
     public override string ModuleVersion => "1.0.0";
 
     public static No_Scope Instance { get; set; } = new No_Scope();
