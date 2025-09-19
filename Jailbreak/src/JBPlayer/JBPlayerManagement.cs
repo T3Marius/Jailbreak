@@ -1,4 +1,5 @@
 using CounterStrikeSharp.API.Core;
+using JailbreakApi;
 
 namespace Jailbreak;
 
@@ -14,8 +15,6 @@ public static class JBPlayerManagement
         {
             jbPlayer = new JBPlayer(controller, controller.PlayerPawn.Value);
             JBPlayers[controller.Slot] = jbPlayer;
-
-            jbPlayer.OnPlayerRoleChanged += Events.OnPlayerRoleChanged;
         }
 
         return jbPlayer;

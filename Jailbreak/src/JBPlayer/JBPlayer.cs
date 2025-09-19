@@ -4,20 +4,11 @@ using static Jailbreak.Jailbreak;
 using CounterStrikeSharp.API.Modules.Utils;
 using System.Drawing;
 using CounterStrikeSharp.API.Core.Translations;
+using JailbreakApi;
 
 namespace Jailbreak;
 
-public enum JBRole
-{
-    Warden,
-    Prisoner,
-    Guardian,
-    Rebel,
-    Freeday,
-    None
-
-}
-public class JBPlayer : IDisposable
+public class JBPlayer : IDisposable, IJBPlayer
 {
     public CCSPlayerController Controller { get; private set; }
     public CCSPlayerPawn PlayerPawn { get; private set; }
@@ -30,7 +21,6 @@ public class JBPlayer : IDisposable
     public string WardenModel => Instance.Config.Models.WardenModel;
     public string GuardianModel => Instance.Config.Models.GuardianModel;
     public string PrisonerModel => Instance.Config.Models.PrisonerModel;
-    public event Action<JBPlayer, JBRole>? OnPlayerRoleChanged;
     private Color DefaultColor => Color.FromArgb(255, 255, 255, 255);
     public JBPlayer(CCSPlayerController controller, CCSPlayerPawn playerPawn)
     {
@@ -107,7 +97,6 @@ public class JBPlayer : IDisposable
     public void SetRole(JBRole role)
     {
         Role = role;
-        OnPlayerRoleChanged?.Invoke(this, role);
     }
     public void OnPlayerSpawn()
     {
