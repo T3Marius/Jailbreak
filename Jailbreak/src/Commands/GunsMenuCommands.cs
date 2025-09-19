@@ -1,6 +1,7 @@
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Utils;
+using JailbreakApi;
 using static Jailbreak.Jailbreak;
 
 namespace Jailbreak;
@@ -25,8 +26,7 @@ public static class GunsMenuCommands
         if (LastRequestManagement.GetActiveRequest() != null)
             return;
 
-        bool isTeleportDay = activeDay is TeleportDay;
-
+        bool isTeleportDay = activeDay != null && activeDay.Name == Instance.Localizer["teleport_day<name>"];
         if (controller.Team == CsTeam.Terrorist)
         {
             if (jbPlayer.Role != JBRole.Guardian && !isTeleportDay)
