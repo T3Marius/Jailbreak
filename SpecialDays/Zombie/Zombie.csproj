@@ -5,7 +5,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<OutputPath>$(ProjectDir)..\..\BuildOutput\plugins\Zombie</OutputPath>
+		<OutputPath>$(ProjectDir)..\..\..\BuildOutput\plugins\Zombie</OutputPath>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<DebugType>none</DebugType>
 		<GenerateDependencyFile>false</GenerateDependencyFile>
@@ -17,7 +17,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\JailbreakApi\JailbreakApi.csproj" />
+		<ProjectReference Include="..\..\..\JailbreakApi\JailbreakApi.csproj" />
 	</ItemGroup>
 
 </Project>

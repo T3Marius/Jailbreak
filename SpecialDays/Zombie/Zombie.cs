@@ -88,7 +88,7 @@ public class ZombieDay : ISpecialDay
 
         }
 
-        Library.StartTimer(PrepareTime,
+        Api.StartTimer(PrepareTime,
         remaining =>
         {
             PrepareTime--;

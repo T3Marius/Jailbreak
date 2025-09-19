@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jailbreak", "Jailbreak\Jailbreak.csproj", "{9728FB77-D631-4FF6-913A-5469CB1729F1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JailbreakCore", "Jailbreak\JailbreakCore.csproj", "{9728FB77-D631-4FF6-913A-5469CB1729F1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JailbreakApi", "JailbreakApi\JailbreakApi.csproj", "{379C4BFC-BF53-434C-8B00-E43C64745B14}"
 EndProject
@@ -16,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teleport", "SpecialDays\Teleport\Teleport.csproj", "{8551C8BB-B597-44AF-A719-E77F95D19FC8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zombie", "SpecialDays\Zombie\Zombie.csproj", "{F74F40C4-B29A-4CD0-B9D4-9B34BF1374E6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{0C0DE0D4-1C8A-4AD1-803E-07B1C2F8F289}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -104,6 +106,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{02EA681E-C7D8-13C7-8484-4AC65E1B71E8} = {0C0DE0D4-1C8A-4AD1-803E-07B1C2F8F289}
 		{141BE05E-482F-46E6-88AC-7FC52954166A} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{51B19C8C-68E8-404E-A8B0-F6C42BAF760A} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{8551C8BB-B597-44AF-A719-E77F95D19FC8} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
