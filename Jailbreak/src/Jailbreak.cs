@@ -19,7 +19,7 @@ public class Jailbreak : BasePlugin
     public static Jailbreak Instance { get; set; } = new();
     public JailbreakConfig Config => _configManager?.Config ?? new JailbreakConfig();
     public static IT3MenuManager MenuManager = null!;
-    public JailbreakApi Api { get; set; } = new JailbreakApi();
+    public JailbreakApi Api { get; set; } = null!;
     public override void OnAllPluginsLoaded(bool hotReload)
     {
         if (MenuManager == null)
@@ -29,8 +29,6 @@ public class Jailbreak : BasePlugin
     {
         Instance = this;
 
-        Capabilities.RegisterPluginCapability(IJailbreakApi.Capability, () => Api);
-
         _configManager = new ConfigManager(Path.Combine(
             Server.GameDirectory,
             "csgo", "addons",
@@ -39,32 +37,18 @@ public class Jailbreak : BasePlugin
 
         _configManager.Initialize();
 
+        Api = new JailbreakApi(_configManager);
+        Capabilities.RegisterPluginCapability(IJailbreakApi.Capability, () => Api);
+
         Events.RegisterVirtualFunctions();
         Events.RegisterEventsHandlers();
         Events.RegisterListeners();
-
-        if (Config.DaysConfig.NoScopeRound)
-            SpecialDayManagement.RegisterDay(new NoScopeDay());
-
-        if (Config.DaysConfig.TeleportRound)
-            SpecialDayManagement.RegisterDay(new TeleportDay());
-
-        if (Config.DaysConfig.ZombieRound)
-            SpecialDayManagement.RegisterDay(new ZombieDay());
-
-        if (Config.DaysConfig.OneInTheChamberRound)
-            SpecialDayManagement.RegisterDay(new OneInTheChamberDay());
-
-        if (Config.LastRequest.KnifeLastRequest)
-            LastRequestManagement.RegisterRequest(new KnifeFightRequest());
-
-        if (Config.LastRequest.HeadshotOnlyLastRequest)
-            LastRequestManagement.RegisterRequest(new OnlyHeadshot());
 
         WardenCommands.Register();
         PrisonerCommands.Register();
         GunsMenuCommands.Register();
     }
+
     public override void Unload(bool hotReload)
     {
         _configManager?.Dispose();
