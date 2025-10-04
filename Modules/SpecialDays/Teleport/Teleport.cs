@@ -4,7 +4,6 @@ using CounterStrikeSharp.API.Modules.Cvars;
 using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
 using CounterStrikeSharp.API.Modules.Utils;
-using Jailbreak;
 using JailbreakApi;
 
 namespace SpecialDays;
@@ -44,7 +43,7 @@ public class TeleportDay : ISpecialDay
             controller.ExecuteClientCommandFromServer("css_guns");
         }
 
-        Library.StartTimer(DelayCooldown,
+        Api.StartTimer(DelayCooldown,
             remaining =>
             {
                 DelayCooldown--;

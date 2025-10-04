@@ -5,7 +5,7 @@ using CounterStrikeSharp.API.Modules.Entities.Constants;
 using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
 using CounterStrikeSharp.API.Modules.Utils;
-using Jailbreak;
+
 using JailbreakApi;
 
 namespace SpecialDays;
@@ -86,11 +86,11 @@ public class OneInTheChamber : ISpecialDay
             {
                 player.GiveNamedItem(CsItem.Knife);
                 player.GiveNamedItem(CsItem.DesertEagle);
-                player.SetAmmo(1);
-                player.SetReserve(0);
+                Api.SetAmmo(player, 1);
+                Api.SetReserve(player, 0);
             });
         }
-        Library.StartTimer(DelayCooldown,
+        Api.StartTimer(DelayCooldown,
             remaining =>
             {
                 g_IsTimerActive = true;
@@ -139,14 +139,14 @@ public class OneInTheChamber : ISpecialDay
             return HookResult.Continue;
 
         var attacker = attackerHandle.Value.As<CCSPlayerPawn>();
-        var controller = attacker.Controller.Value;
+        var controller = attacker.OriginalController.Value;
         if (controller == null)
             return HookResult.Continue;
 
         if (g_IsTimerActive)
             return HookResult.Continue;
 
-        CBasePlayerWeapon? activeWeapon = attacker.GetActiveWeapon();
+        CBasePlayerWeapon? activeWeapon = Api.GetActiveWeapon(controller);
 
         if (activeWeapon != null && activeWeapon.DesignerName == "weapon_deagle")
         {

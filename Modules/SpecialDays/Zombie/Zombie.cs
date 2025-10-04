@@ -4,7 +4,6 @@ using CounterStrikeSharp.API.Modules.Entities.Constants;
 using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
 using CounterStrikeSharp.API.Modules.Utils;
-using Jailbreak;
 using JailbreakApi;
 
 namespace SpecialDays;
@@ -76,7 +75,7 @@ public class ZombieDay : ISpecialDay
             Api.FreezePlayer(player); // freeze zombies for PrepareTime
             player.RemoveWeapons();
             player.TakesDamage = false; // enable god mode
-            player.SetHealth(Api.GetConfigValue("DaysConfig.ZombieDayConfig.ZombiesHealth", 5000)); // set zombie health
+            Api.SetHealth(player, Api.GetConfigValue("DaysConfig.ZombieDayConfig.ZombiesHealth", 5000)); // set zombie health
 
             Server.NextFrame(() => // call it on next frame because it might interact with prisoner model set.
             {
@@ -104,7 +103,7 @@ public class ZombieDay : ISpecialDay
             {
                 Api.UnfreezePlayer(player); // unfreeze zombies
                 player.TakesDamage = true; // disable god mode
-                player.SetSpeed(1.1f); // slightly faster than humans
+                Api.SetSpeed(player, 1.1f); // slightly faster than humans
             }
         });
 
@@ -119,7 +118,7 @@ public class ZombieDay : ISpecialDay
         if (controller == null || controller.Team != CsTeam.CounterTerrorist)
             return HookResult.Continue;
 
-        Instance.AddTimer(3.0f, () => controller.SetReserve(100));
+        Instance.AddTimer(3.0f, () => Api.SetReserve(controller, 100));
 
         return HookResult.Continue;
     }

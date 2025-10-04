@@ -5,7 +5,6 @@ using CounterStrikeSharp.API.Modules.Entities.Constants;
 using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
 using CounterStrikeSharp.API.Modules.Utils;
-using Jailbreak;
 using JailbreakApi;
 using Microsoft.Extensions.DependencyModel;
 using static CounterStrikeSharp.API.Core.Listeners;
@@ -61,9 +60,10 @@ public class NoScope : ISpecialDay
 
     public void Start()
     {
+
         foreach (var player in Utilities.GetPlayers())
         {
-            player.SetGravity(0.3f);
+            Api.SetGravity(player, 0.3f);
         }
 
         Api.StartTimer(DelayCooldown,
@@ -103,7 +103,7 @@ public class NoScope : ISpecialDay
     {
         foreach (var player in Utilities.GetPlayers())
         {
-            player.SetGravity(1.0f);
+            Api.SetGravity(player, 1.0f);
         }
 
         Instance.RemoveListener<OnTick>(OnTick);

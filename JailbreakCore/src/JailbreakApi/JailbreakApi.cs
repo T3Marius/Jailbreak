@@ -58,4 +58,40 @@ public class JailbreakApi : IJailbreakApi
     {
         controller.Unfreeze();
     }
+    public void SetGravity(CCSPlayerController controller, float gravity)
+    {
+        controller.SetGravity(gravity);
+    }
+    public void SetSpeed(CCSPlayerController controller, float speed)
+    {
+        controller.SetSpeed(speed);
+    }
+    public void SetHealth(CCSPlayerController controller, int health)
+    {
+        controller.SetHealth(health);
+    }
+    public void SetAmmo(CCSPlayerController controller, int ammo)
+    {
+        controller.SetAmmo(ammo);
+    }
+    public void SetReserve(CCSPlayerController controller, int reserve)
+    {
+        controller.SetReserve(reserve);
+    }
+    public void PrintToCenterAll(string message)
+    {
+        Library.PrintToCenterAll(message);
+    }
+    public void PrintToAlertAll(string message)
+    {
+        Library.PrintToAlertAll(message);
+    }
+    public void PrintToChatAll(string message)
+    {
+        Library.PrintToChatAll(message);
+    }
+    public CBasePlayerWeapon? GetActiveWeapon(CCSPlayerController controller)
+    {
+        return controller.PlayerPawn.Value?.GetActiveWeapon();
+    }
 }

@@ -4,7 +4,6 @@ using CounterStrikeSharp.API.Modules.Entities.Constants;
 using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
 using CounterStrikeSharp.API.Modules.Utils;
-using Jailbreak;
 using JailbreakApi;
 
 namespace LastRequests;
@@ -16,12 +15,6 @@ public class Knife_Fight : BasePlugin
     public override string ModuleVersion => "1.0.0";
 
     public static IJailbreakApi Api = null!;
-    public static Knife_Fight Instance { get; set; } = new();
-
-    public override void Load(bool hotReload)
-    {
-        Instance = this;
-    }
     public override void OnAllPluginsLoaded(bool hotReload)
     {
         Api = IJailbreakApi.Capability.Get() ?? throw new Exception("JailbreakApi not found!");
@@ -93,8 +86,8 @@ public class KnifeFight : ILastRequest
         Prisoner.RemoveWeapons();
         Guardian.RemoveWeapons();
 
-        Prisoner.SetHealth(100);
-        Guardian.SetHealth(100);
+        Api.SetHealth(Prisoner, 100);
+        Api.SetHealth(Prisoner, 100);
 
         switch (SelectedType?.ToLower())
         {
@@ -104,14 +97,14 @@ public class KnifeFight : ILastRequest
             case "gravity":
                 IsOneShotEnable = false;
 
-                Prisoner.SetGravity(0.3f);
-                Guardian.SetGravity(0.3f);
+                Api.SetGravity(Prisoner, 0.3f);
+                Api.SetGravity(Guardian, 0.3f);
                 break;
             case "speed":
                 IsOneShotEnable = false;
 
-                Prisoner.SetSpeed(2.5f);
-                Guardian.SetSpeed(2.5f);
+                Api.SetSpeed(Prisoner, 2.5f);
+                Api.SetSpeed(Guardian, 2.5f);
                 break;
             case "oneshot":
                 IsOneShotEnable = true;
@@ -178,16 +171,17 @@ public class KnifeFight : ILastRequest
         string winnerName = winner?.PlayerName ?? "None";
         string loserName = loser?.PlayerName ?? "None";
 
-        Library.PrintToAlertAll(Api.GetLocalizer("last_request_ended", Name, winnerName, loserName));
+        Api.PrintToAlertAll(Api.GetLocalizer("last_request_ended", Name, winnerName, loserName));
 
         if (Prisoner == null || Guardian == null)
             return;
 
         Server.NextFrame(() => Prisoner.RemoveWeapons());
 
-        Prisoner.SetSpeed(1.0f);
-        Guardian.SetSpeed(1.0f);
-        Prisoner.SetGravity(1.0f);
-        Guardian.SetGravity(1.0f);
+        Api.SetSpeed(Prisoner, 1.0f);
+        Api.SetSpeed(Guardian, 1.0f);
+
+        Api.SetGravity(Prisoner, 1.0f);
+        Api.SetGravity(Guardian, 1.0f);
     }
 }
