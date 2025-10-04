@@ -238,4 +238,12 @@ public static class Library
 
         return new Vector(x, y, z);
     }
+    public static void RemoveCheatFlagFromConVar(string name)
+    {
+        ConVar? Convar = ConVar.Find(name);
+        if (Convar == null)
+            return;
+
+        Convar.Flags &= ~ConVarFlags.FCVAR_CHEAT;
+    }
 }

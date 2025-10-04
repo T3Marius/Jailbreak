@@ -7,6 +7,7 @@ using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
 using CounterStrikeSharp.API.Modules.Utils;
 using Jailbreak;
 using JailbreakApi;
+using Microsoft.Extensions.DependencyModel;
 using static CounterStrikeSharp.API.Core.Listeners;
 
 namespace SpecialDays;
@@ -65,7 +66,7 @@ public class NoScope : ISpecialDay
             player.SetGravity(0.3f);
         }
 
-        Library.StartTimer(DelayCooldown,
+        Api.StartTimer(DelayCooldown,
             remaining =>
             {
                 DelayCooldown--;

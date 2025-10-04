@@ -47,6 +47,9 @@ public class Jailbreak : BasePlugin
         WardenCommands.Register();
         PrisonerCommands.Register();
         GunsMenuCommands.Register();
+
+        Library.RemoveCheatFlagFromConVar("player_ping_token_cooldown");
+        Server.ExecuteCommand("player_ping_token_cooldown 0");
     }
 
     public override void Unload(bool hotReload)

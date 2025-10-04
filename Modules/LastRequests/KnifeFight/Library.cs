@@ -6,7 +6,7 @@ using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Timers;
 using CounterStrikeSharp.API.Modules.Utils;
 using Microsoft.Extensions.Logging;
-using static SpecialDays.No_Scope;
+using static LastRequests.Knife_Fight;
 using CSTimer = CounterStrikeSharp.API.Modules.Timers.Timer;
 
 namespace Jailbreak;
