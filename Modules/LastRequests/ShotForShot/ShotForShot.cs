@@ -163,6 +163,7 @@ public class ShotForShot : ILastRequest
     {
         VirtualFunctions.CBaseEntity_TakeDamageOldFunc.Unhook(OnTakeDamage, HookMode.Pre);
         VirtualFunctions.CCSPlayer_ItemServices_CanAcquireFunc.Unhook(OnCanAcquire, HookMode.Pre);
+        Shot_For_Shot.Instance.DeregisterEventHandler<EventWeaponFire>(OnWeaponFire);
 
         string winnerName = winner?.PlayerName ?? "None";
         string loserName = loser?.PlayerName ?? "None";
