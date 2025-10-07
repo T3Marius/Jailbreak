@@ -13,7 +13,6 @@ public class Knife_Fight : BasePlugin
     public override string ModuleAuthor => "T3Marius";
     public override string ModuleName => "[LR] KnifeFight";
     public override string ModuleVersion => "1.0.0";
-
     public static IJailbreakApi Api = null!;
     public override void OnAllPluginsLoaded(bool hotReload)
     {
