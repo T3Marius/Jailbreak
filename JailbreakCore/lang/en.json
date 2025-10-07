@@ -57,6 +57,7 @@
   "last_request_ended": " {green}[JB]{default} {yellow}{0}{default} Last Request ended!\n>> Winner: {green}{1}{default}\n>> Loser: {red}{2}{default}",
   "knife_fight_last_request<name>": "Knife Fight",
   "only_headshot_fight_last_request<name>": "Only Headshot",
+  "shot_for_shot_last_request<name>": "Shot For Shot",
   "last_request_must_be_prisoner": "You must be the last prisoner in order to use this command!",
   "cant_use_last_request": "You can't use Last Request right now.",
   "cant_use_last_request_as_rebel": "You can't use last request as a rebel. Use !s to surrended yourself.'",
@@ -67,6 +68,6 @@
   "surrender_sent": "A surrender request was send to the {blue}Warden{default}. You will be notified if he {green}accepts{default} it or {red}not{default}.",
   "rebel_surrended": "Rebel {red}{0}{default} surrended! All his weapons was removed.",
   "surrender_declined": "{blue}Warden{default} declined your surrender request! You don't have anymore tries this round.",
-  "surrender_max_tries_attempt": "You can only surrender once per round!"
-
+  "surrender_max_tries_attempt": "You can only surrender once per round!",
+  "next_shooter": "Next to shot is {red}{0}{default}."
 }
