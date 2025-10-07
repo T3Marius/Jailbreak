@@ -235,4 +235,7 @@ public class LastRequestConfig
 
     [YamlMember(Alias = "only_headshot_last_request")]
     public bool HeadshotOnlyLastRequest { get; set; } = true;
+
+    [YamlMember(Alias = "shot_for_shot")]
+    public bool ShotForShot { get; set; } = true;
 }
