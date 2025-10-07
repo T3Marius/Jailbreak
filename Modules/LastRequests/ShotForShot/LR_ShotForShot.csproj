@@ -5,7 +5,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<OutputPath>$(ProjectDir)..\..\..\BuildOutput\plugins\ShotForShot</OutputPath>
+		<OutputPath>$(ProjectDir)..\..\..\BuildOutput\plugins\LR_ShotForShot</OutputPath>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<DebugType>none</DebugType>
 		<GenerateDependencyFile>false</GenerateDependencyFile>
@@ -21,7 +21,5 @@
 			<HintPath>..\..\ExternalAPI\JailbreakAPI.dll</HintPath>
 		</Reference>
 	</ItemGroup>
-
-
 
 </Project>

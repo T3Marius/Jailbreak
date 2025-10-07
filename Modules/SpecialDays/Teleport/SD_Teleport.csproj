@@ -5,7 +5,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<OutputPath>$(ProjectDir)..\..\..\BuildOutput\plugins\Zombie</OutputPath>
+		<OutputPath>$(ProjectDir)..\..\..\BuildOutput\plugins\SD_Teleport</OutputPath>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<DebugType>none</DebugType>
 		<GenerateDependencyFile>false</GenerateDependencyFile>
@@ -21,5 +21,7 @@
 			<HintPath>..\..\ExternalAPI\JailbreakAPI.dll</HintPath>
 		</Reference>
 	</ItemGroup>
+
+
 
 </Project>
