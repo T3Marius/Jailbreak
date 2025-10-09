@@ -23,15 +23,11 @@ jobs:
         with:
           dotnet-version: "8.0.x"
 
-      - name: Skip build and use prebuilt artifacts
-        run: |
-          echo "Skipping dotnet restore/build — using prebuilt BuildOutput directory"
-          if [ -d BuildOutput ]; then
-            echo "BuildOutput found. Listing top-level files for verification:"
-            ls -la BuildOutput | sed -n '1,200p'
-          else
-            echo "Warning: BuildOutput directory not found. The workflow will still continue to create a release zip, but the zip may be empty or missing expected artifacts."
-          fi
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release
 
       - name: Zip BuildOutput
         run: |
