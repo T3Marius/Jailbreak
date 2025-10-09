@@ -32,6 +32,15 @@ jobs:
       - name: Build JailbreakCore
         run: dotnet build JailbreakCore/JailbreakCore.csproj --configuration Release
 
+      - name: Copy pre-compiled modules
+        run: |
+          # Copy all module folders (starting with SD_ or LR_) to JailbreakCore
+          for module in BuildOutput/plugins/SD_* BuildOutput/plugins/LR_*; do
+            if [ -d "$module" ]; then
+              cp -r "$module" BuildOutput/plugins/JailbreakCore/
+            fi
+          done
+
       - name: Zip BuildOutput
         run: |
           zip -r jailbreak-${{ github.ref_name }}.zip BuildOutput
