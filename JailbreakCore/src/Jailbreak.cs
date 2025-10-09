@@ -14,7 +14,7 @@ public class Jailbreak : BasePlugin
     private ConfigManager? _configManager;
 
     public override string ModuleAuthor => "T3Marius";
-    public override string ModuleName => "Jailbreak-Core";
+    public override string ModuleName => "Jailbreak Core";
     public override string ModuleVersion => "1.0.0";
     public static Jailbreak Instance { get; set; } = new();
     public JailbreakConfig Config => _configManager?.Config ?? new JailbreakConfig();
