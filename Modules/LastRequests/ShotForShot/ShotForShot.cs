@@ -27,8 +27,6 @@ public class Shot_For_Shot : BasePlugin
 
         if (Api.GetConfigValue("LastRequest.ShotForShot", true))
             Api.RegisterRequest(new ShotForShot());
-
-
     }
 }
 
