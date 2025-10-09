@@ -33,22 +33,15 @@ Jailbreak is a game mode where players are split into wardens (guards) and priso
 
 ## Modules (how they work)
 
-Modules are designed to be small, focused features that subscribe to core events and use the core API to modify behavior. Two example modules in this project are:
+Modules are small, focused features that subscribe to core events and use the core API to change gameplay. Two examples in this project are described below — updated to reflect exact behavior:
 
 - LastRequests
-  - Purpose: allow wardens to assign a limited number of "last requests" to prisoners at the start of the round.
-  - How it works: hooks round-start events, selects eligible prisoners, and presents an in-game menu or message. The module uses the JBPlayer API to read/set role properties and to print messages to players.
+  - Purpose: available to the last prisoner in a round. The last prisoner uses the `!lr` (or configured `css_` command) to open a Last Request menu and select a request.
+  - How it works: Last Request menu entries are provided by LastRequest modules. When the single remaining prisoner runs the command (typically `!lr`), the menu is shown and the prisoner chooses one of the available requests supplied by the active LastRequest modules.
 
 - SpecialDays
-  - Purpose: introduce temporary, time-based modifiers or rule changes (example: DoublePointsDay, NoWeaponsDay, FreeFoodDay).
-  - How it works: configured in the module's config (or main config), the module registers a schedule or flag and listens for round start events to apply effects. Effects are applied by calling API methods on the core (e.g., ModifySpawn, ChangeRoleModel, BroadcastAnnouncement).
-
-General module behavior:
-
-- Register: a module registers event handlers during plugin initialization.
-- Hook: modules listen to core events (round start, player spawn, player death, team change, menu interactions, etc.).
-- Act: modules use core API functions to read or change gameplay state.
-- Unregister/Cleanup: modules should remove handlers when unloaded.
+  - Purpose: temporary, round-based modifiers selected by the Warden (examples: TeleportDay, Knife Fight).
+  - How it works: only a Warden can pick a Special Day from the Warden menu. Selection is subject to a cooldown measured in rounds (the cooldown value is configurable in the main config; the default is 3 rounds). When the Warden selects a Special Day, it is scheduled to start on the next round.
 
 ## API highlights
 
@@ -75,10 +68,29 @@ Translations used for menus and messages are kept under `lang/` (for example `la
 
 ## Examples
 
+Using the IJailbreakApi class.
+
+```csharp
+IJailbreakApi Api = null!;
+
+public override void OnAllPluginsLoaded()
+{
+    // from this api you have acces to all of functions from it.
+    Api = IJailbreakApi.Capability().Get() ?? throw new Exception("JBApi not found!")
+}
+```
+
 Assign a warden programmatically:
 
 ```csharp
-IJBPlayer jbPlayer = Api.GetJBPlayer(controller).SetWarden(true);
+IJBPlayer? jbPlayer = Api.GetJBPlayer(controller)?.SetWarden(true);
+
+// or u can just use the jbPlayer variable.
+// make sure to check it's nullabilty though.
+
+if (jbPlayer != null)
+    jbPlayer.SetWarden(true);
+
 ```
 
 Print to chat:
