@@ -26,8 +26,11 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Build
-        run: dotnet build --configuration Release
+      - name: Build JailbreakApi
+        run: dotnet build JailbreakApi/JailbreakApi.csproj --configuration Release
+
+      - name: Build JailbreakCore
+        run: dotnet build JailbreakCore/JailbreakCore.csproj --configuration Release
 
       - name: Zip BuildOutput
         run: |
