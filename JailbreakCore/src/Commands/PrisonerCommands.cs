@@ -88,6 +88,7 @@ public static class PrisonerCommands
         SurrenderTries.Add(rebel.Controller);
 
         rebel.Print("chat", Instance.Localizer["prefix"] + Instance.Localizer["surrender_sent"]);
+        WardenMenu.OpenSurrenderRequestMenu(warden, rebel);
 
 
     }
