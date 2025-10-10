@@ -78,6 +78,8 @@ public class WardenConfig
 
     [YamlMember(Alias = "warden_color")]
     public string WardenColor { get; set; } = "Blue";
+    [YamlMember(Alias = "show_menu_on_set")]
+    public bool ShowMenuOnSet { get; set; } = true;
 
     [YamlMember(Alias = "commands")]
     public WardenCommandsConfig Commands { get; set; } = new();

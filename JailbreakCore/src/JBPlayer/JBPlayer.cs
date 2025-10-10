@@ -34,7 +34,7 @@ public class JBPlayer : IDisposable, IJBPlayer
             SetRole(JBRole.Warden);
             ConfigureWarden();
 
-            if (!Controller.IsBot)
+            if (!Controller.IsBot && Instance.Config.Warden.ShowMenuOnSet)
                 WardenMenu.Display(this);
         }
         else
